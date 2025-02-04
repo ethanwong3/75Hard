@@ -8,8 +8,7 @@ export default function App() {
   const { user, loading } = useAuth();
 
   if (loading) {
-    // Render a loading screen or spinner while checking auth state
-    return null;
+    return null; // REPLACE WITH LOADING SCREEN
   }
 
   return (
