@@ -1,4 +1,3 @@
-// App.js
 import React from "react";
 import { ActivityIndicator, View, StyleSheet } from "react-native";
 import {
@@ -11,7 +10,6 @@ import { NavigationContainer } from "@react-navigation/native";
 import TabNavigator from "./src/navigation/TabNavigator";
 
 export default function App() {
-  // Load fonts using the expo-google-fonts hook.
   let [fontsLoaded] = useFonts({
     Lexend_400Regular,
     Lexend_700Bold,
