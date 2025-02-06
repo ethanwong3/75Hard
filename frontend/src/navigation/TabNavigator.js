@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Image } from "react-native";
+import { StyleSheet, View, Image } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Colors, Fonts } from "../styles/theme";
 // import LinearGradient from "react-native-linear-gradient"; // gradient not working atm
@@ -28,6 +28,7 @@ export default function TabNavigator() {
         headerTintColor: Colors.light,
         headerStyle: {
           backgroundColor: Colors.blueLight,
+          height: 120,
         },
         headerTitleStyle: {
           fontFamily: Fonts.bold,
@@ -42,8 +43,18 @@ export default function TabNavigator() {
           fontSize: 16,
           fontFamily: Fonts.regular,
         },
+        tabBarStyle: {
+          height: 90,
+          paddingTop: 10,
+        },
         headerLeft: () => (
-          <Image source={logo} style={styles.logo} resizeMode="contain" />
+          <View style={{ paddingHorizontal: 20 }}>
+            <Image
+              source={logo}
+              style={{ height: 40, width: 40 }}
+              resizeMode="contain"
+            />
+          </View>
         ),
       }}
     >
