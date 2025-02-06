@@ -10,6 +10,7 @@ import UploadScreen from "../screens/UploadScreen";
 import SocialScreen from "../screens/SocialScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 
+import logo from "../assets/logo.png";
 import todayIcon from "../assets/todayIcon.png";
 import activityIcon from "../assets/activityIcon.png";
 import uploadIcon from "../assets/uploadIcon_.png"; // need to combine the two parts
@@ -28,12 +29,22 @@ export default function TabNavigator() {
         headerStyle: {
           backgroundColor: Colors.blueLight,
         },
+        headerTitleStyle: {
+          fontFamily: Fonts.bold,
+          fontSize: 24,
+        },
+        headerTitleContainerStyle: {
+          paddingHorizontal: 20,
+        },
         tabBarActiveTintColor: Colors.blueLight,
         tabBarInactiveTintColor: Colors.dark,
         tabBarLabelStyle: {
           fontSize: 16,
           fontFamily: Fonts.regular,
         },
+        headerLeft: () => (
+          <Image source={logo} style={styles.logo} resizeMode="contain" />
+        ),
       }}
     >
       <Tab.Screen
