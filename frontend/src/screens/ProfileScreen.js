@@ -1,10 +1,16 @@
 import React from "react";
-import { View, Text, TextInput, Image } from "react-native";
+import { View, Text, TextInput, Image, TouchableOpacity } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import catImage from "../../assets/cat.png";
+import clogImage from "../../assets/clog.png";
 
 export default function ProfileScreen() {
+  const navigation = useNavigation();
   return (
     <View style={styles.container}>
+      <TouchableOpacity onPress={() => navigation.navigate("Settings")}>
+        <Image source={clogImage} style={styles.clogIcon} />
+      </TouchableOpacity>
       {/* Avatar and User Info */}
       <View style={styles.profileSection}>
         <Image source={catImage} style={styles.avatar} />
@@ -40,6 +46,14 @@ const styles = {
     padding: 30,
     backgroundColor: "#f0f0f0",
     flex: 1,
+  },
+  clogIcon: {
+    position: "absolute",
+    top: 10,  
+    right: 10, 
+    width: 40, 
+    height: 40,
+    zIndex: 10, 
   },
   profileSection: {
     flexDirection: "row",
