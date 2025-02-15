@@ -22,7 +22,7 @@ export default function MiniButton({ text, source }) {
 
 const styles = StyleSheet.create({
   loginTextFrame: {
-    width: 300,
+    width: 330,
     height: 45,
     borderColor: '#0077B6',
     borderRadius: 50,

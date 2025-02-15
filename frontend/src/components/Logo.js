@@ -1,14 +1,14 @@
 import React from "react";
-import { Image, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Image, View, Text, StyleSheet, Presable, Pressable } from 'react-native';
 
 const logo = require('../../assets/logo.png');
 
 
 export default function Logo({ onPress }) {
     return (
-        <TouchableOpacity style={styles.buttonContainer} onPress={onPress}>
+        <Pressable style={styles.buttonContainer} onPress={onPress}>
           <Image source={logo} />
-        </TouchableOpacity>
+        </Pressable>
       );
     }
     

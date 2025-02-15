@@ -7,6 +7,9 @@ export default function SignInWithGoogle() {
         <Pressable>
             <View style={{flexDirection: "row"}}>
                 <Image source={googlelogo}/>
+                <View style={styles.text}>
+                    <Text> Sign in with Google</Text>
+                </View>
             </View>
         </Pressable>
 
@@ -15,7 +18,8 @@ export default function SignInWithGoogle() {
 }
 
 const styles = StyleSheet.create({
-    example: {
-
+    text: {
+        paddingTop: 5,
+        paddingLeft: 5
     },
 });

@@ -4,6 +4,8 @@ import WavySquare from "../components/WavySquare";
 import TitleText from "../components/TitleText";
 import MiniButton from "../components/MiniButton";
 import MiniButtonHollow from "../components/MiniButtonHollow";
+import SignInWithGoogle from "../components/SignInWithGoogle";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 
 export default function WelcomeScreen() {
@@ -25,8 +27,8 @@ export default function WelcomeScreen() {
         <MiniButtonHollow text='Login'/>
       </View>
 
-      <View>
-        
+      <View style={styles.signInWithGoogle}>
+        <SignInWithGoogle/>
       </View>
 
     </View>
@@ -55,6 +57,11 @@ const styles = StyleSheet.create({
     justifyAlign: 'center',
     paddingBottom: 30,
 
+  },
+
+  signInWithGoogle: {
+    paddingTop: 55,
+    alignItems: 'center',
   },
 
   wavySquareStyles: {

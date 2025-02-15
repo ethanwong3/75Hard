@@ -4,7 +4,7 @@ import Svg, { Path, Defs, LinearGradient, Stop } from 'react-native-svg';
 import Logo from '../components/Logo';
 import ArrowLeft from '../components/ArrowLeft'
 
-export default function WavySquare({ customStyles, height = 160, top = 130 }) {
+export default function WavySquareLogoLesss({ customStyles, height = 160, top = 130 }) {
     return (
         <View style={[customStyles, { height }]}>
             <View style={[styles.squareTop, { height }]}>
@@ -13,9 +13,9 @@ export default function WavySquare({ customStyles, height = 160, top = 130 }) {
                     height="60%"
                     width="100%"
                     // viewBox="0 0 1440 320"
-                    viewBox="0 0 1440 340"
+                    viewBox="0 0 1440 200"
 
-                    style={{ position: 'absolute', top }}
+                    style={{ position: 'absolute', top: 95 }}
                 >
                     {/* Define Gradient */}
                     <Defs>
@@ -34,11 +34,7 @@ export default function WavySquare({ customStyles, height = 160, top = 130 }) {
                         0,80,0L0,0Z"
                     />
                 </Svg>
-
-                {/* Logo positioned at the bottom-center */}
-                <View style={styles.logo}>
-                    <Logo/>
-                </View>
+        
             </View>
         </View>
     );

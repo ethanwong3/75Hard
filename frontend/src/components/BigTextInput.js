@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { TextInput, Text, View, StyleSheet } from 'react-native';
 
-export default function TextInputBubbles({
+export default function BigNumberInput({
   input,
   dotDisplay,
   value,
@@ -10,12 +10,12 @@ export default function TextInputBubbles({
 }) {
   return (
     <View
-      style={[styles.loginTextFrame, styles.boxShadow, styles.androidShadow]}
+      style={styles.loginTextFrame}
     >
       <TextInput
-        style={styles.loginTextField}
         secureTextEntry={dotDisplay}
         placeholder={input}
+        style={styles.loginTextField}
         value={value}
         onChangeText={setValue}
         keyboardType={keyboardType}
@@ -25,15 +25,17 @@ export default function TextInputBubbles({
 }
 const styles = StyleSheet.create({
   loginTextFrame: {
-    width: 330,
-    height: 45,
-    borderRadius: 40,
-    backgroundColor: '#EEEBEB',
-    justifyContent: 'center',
+    width: 360,
+    height: 278,
+    borderColor: 'white',
+    borderRadius: 30,
+    borderWidth: 1,
+    backgroundColor: '#EBEBEB',
   },
 
   loginTextField: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 30,
+    paddingVertical: 30,
     fontSize: 20,
   },
 });
