@@ -7,13 +7,20 @@ import {
 } from "@expo-google-fonts/lexend";
 import { NavigationContainer } from "@react-navigation/native";
 
+import useAuth from "./src/hooks/useAuth";
 import TabNavigator from "./src/navigation/TabNavigator";
+import AuthStack from "./src/navigation/AuthStack";
 
 export default function App() {
+  const { user, loading } = useAuth();
   let [fontsLoaded] = useFonts({
     Lexend_400Regular,
     Lexend_700Bold,
   });
+
+  if (loading) {
+    return null; // REPLACE WITH LOADING SCREEN
+  }
 
   if (!fontsLoaded) {
     return (
@@ -25,7 +32,7 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <TabNavigator />
+      {user ? <TabNavigator /> : <AuthStack />}
     </NavigationContainer>
   );
 }
