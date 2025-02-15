@@ -32,7 +32,8 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      {user ? <TabNavigator /> : <AuthStack />}
+      {/*{user ? <TabNavigator /> : <AuthStack />}*/}
+      <TabNavigator />
     </NavigationContainer>
   );
 }
