@@ -24,21 +24,57 @@ import studyIcon from "../assets/studyIcon.png";
 import workoutIcon from "../assets/workoutIcon.png";
 import photoIcon from "../assets/photoIcon.png";
 import editIcon from "../assets/editIcon.png";
+import saveIcon from "../assets/saveIcon.png";
+import cancelIcon from "../assets/cancelIcon.png";
 
 import dummyStreak from "../assets/dummyStreak.png";
 import dummyCalendar from "../assets/dummyCalendar.png";
 
 export default function TodayScreen() {
+  // VARIABLES ////////////////////////////////////////////////////////////////
   const [screenWidth, setScreenWidth] = useState(0);
   const [isToggled, setToggled] = useState(false);
   const [selectedChallenge, setSelectedChallenge] = useState("75 Hard");
   const [isEditing, setIsEditing] = useState(false);
+  const [originalComment, setOriginalComment] = useState(
+    "This is my first time attempting this challenge, and hopefully the last!\n\nInstead of reading 10 pages a day, I will be solving at least 1 leetcode a day."
+  );
   const [editedComment, setEditedComment] = useState(
     "This is my first time attempting this challenge, and hopefully the last!\n\nInstead of reading 10 pages a day, I will be solving at least 1 leetcode a day."
   );
 
+  // DUMMY DATA ///////////////////////////////////////////////////////////////
+
+  // global data
+  const challenges = ["75 Hard", "75 Medium", "75 Soft"];
+
+  // user data
+  const [k, p, c, f] = [500, 15, 60, 90]; // getUserMacroProgress();
+  const [kcal, protein, carbohydrate, fat] = [1000, 100, 100, 100]; // getUserMacroGoals();
+  const [water, study, workout, photo] = [3, 1, 1, 0]; // getUserOtherProgress();
+  const [progress, total] = [15, 75]; // getUserChallengeProgress();
+
+  // challenge data
+  const challenge = {
+    name: "75 Hard",
+    rules:
+      "You must complete each the following everyday:\n- 45-minute indoor workout.\n- 45-minute outdoor workout.\n- Drink 1 gallon (3.8L) of water.\n- Read 10 pages of a self-improvement book.\n- Take a progress photo.",
+  }; //getChallenge();
+
+  // HANDLE FUNCTIONS /////////////////////////////////////////////////////////
+
   const handleToggle = () => {
     setToggled(!isToggled);
+  };
+
+  const handleSaveComment = () => {
+    setOriginalComment(editedComment);
+    setIsEditing(false);
+  };
+
+  const handleCancelComment = () => {
+    setEditedComment(originalComment);
+    setIsEditing(false);
   };
 
   const convertToScaleColor = (val) => {
@@ -55,18 +91,7 @@ export default function TodayScreen() {
     }
   };
 
-  // user data
-  const [k, p, c, f] = [500, 15, 60, 90]; // getUserMacroProgress();
-  const [kcal, protein, carbohydrate, fat] = [1000, 100, 100, 100]; // getUserMacroGoals();
-  const [water, study, workout, photo] = [3, 1, 1, 0]; // getUserOtherProgress();
-  const [progress, total] = [15, 75]; // getUserChallengeProgress();
-
-  // challenge data
-  const challenge = {
-    name: "75 Hard",
-    rules:
-      "You must complete each the following everyday:\n- 45-minute indoor workout.\n- 45-minute outdoor workout.\n- Drink 1 gallon (3.8L) of water.\n- Read 10 pages of a self-improvement book.\n- Take a progress photo.",
-  }; //getChallenge();
+  // SCREEN ///////////////////////////////////////////////////////////////////
 
   return (
     <ScrollView
@@ -106,16 +131,18 @@ export default function TodayScreen() {
           <View style={styles.overallOtherContainer}>
             <View style={styles.top}>
               <Text style={styles.title}>Rules</Text>
-              <Picker
-                style={styles.picker}
-                selectedValue={selectedChallenge}
-                onValueChange={(itemValue) => setSelectedChallenge(itemValue)}
-                mode="dropdown"
-              >
-                {["75 Hard", "75 Medium", "75 Easy"].map((ch) => (
-                  <Picker.Item key={ch} label={ch} value={ch} />
-                ))}
-              </Picker>
+              <View style={styles.pickerContainer}>
+                <Picker
+                  style={styles.picker}
+                  selectedValue={selectedChallenge}
+                  onValueChange={(itemValue) => setSelectedChallenge(itemValue)}
+                  mode="dropdown"
+                >
+                  {challenges.map((ch) => (
+                    <Picker.Item key={ch} label={ch} value={ch} />
+                  ))}
+                </Picker>
+              </View>
             </View>
             <View style={[styles.bottom, styles.shadow]}>
               <Text style={styles.text}>{challenge.rules}</Text>
@@ -126,9 +153,22 @@ export default function TodayScreen() {
           <View style={styles.overallOtherContainer}>
             <View style={styles.top}>
               <Text style={styles.title}>Comments</Text>
-              <Pressable onPress={() => setIsEditing(!isEditing)}>
-                <Image style={styles.editIcon} source={editIcon} />
-              </Pressable>
+              <View style={styles.iconGroup}>
+                {isEditing ? (
+                  <View style={styles.horiz}>
+                    <Pressable onPress={handleSaveComment}>
+                      <Image style={styles.editIcon} source={saveIcon} />
+                    </Pressable>
+                    <Pressable onPress={handleCancelComment}>
+                      <Image style={styles.editIcon} source={cancelIcon} />
+                    </Pressable>
+                  </View>
+                ) : (
+                  <Pressable onPress={() => setIsEditing(true)}>
+                    <Image style={styles.editIcon} source={editIcon} />
+                  </Pressable>
+                )}
+              </View>
             </View>
             <View style={[styles.bottom, styles.shadow]}>
               {isEditing ? (
@@ -397,8 +437,14 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.bold,
     color: Colors.dark,
   },
+  pickerContainer: {
+    height: 40,
+    width: 150,
+    justifyContent: "center",
+    backgroundColor: Colors.light,
+    borderRadius: 5,
+  },
   picker: {
-    backgroundColor: "red",
     height: 40,
     width: 150,
     color: Colors.dark,
@@ -410,6 +456,15 @@ const styles = StyleSheet.create({
   },
   commentInput: {
     height: 100,
-    textAlignVertical: "top",
+    borderWidth: 1,
+    borderColor: Colors.neutral,
+    borderRadius: 5,
+    fontFamily: Fonts.regular,
+    fontSize: 16,
+    color: Colors.dark,
+  },
+  horiz: {
+    flexDirection: "row",
+    columnGap: 5,
   },
 });
