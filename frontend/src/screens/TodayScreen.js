@@ -15,7 +15,7 @@ import {
 } from "react-native";
 import PieChart from "react-native-pie-chart";
 import * as Progress from "react-native-progress";
-import { Picker } from "@react-native-picker/picker";
+import DropDownPicker from "react-native-dropdown-picker";
 
 import { Colors, Fonts } from "../styles/theme";
 import dietIcon from "../assets/dietIcon.png";
@@ -26,22 +26,52 @@ import photoIcon from "../assets/photoIcon.png";
 import editIcon from "../assets/editIcon.png";
 import saveIcon from "../assets/saveIcon.png";
 import cancelIcon from "../assets/cancelIcon.png";
+import fireIcon from "../assets/fireIcon.png";
 
-import dummyStreak from "../assets/dummyStreak.png";
-import dummyCalendar from "../assets/dummyCalendar.png";
+function Streak({ progress }) {
+  return (
+    <View style={styles.streakContainer}>
+      <Image source={fireIcon} style={styles.fireIcon} resizeMode="contain" />
+      <Text style={styles.streakText}>{progress}</Text>
+    </View>
+  );
+}
+
+function Calendar({ progress, total }) {
+  const cells = Array.from({ length: total }, (_, i) => i);
+  return (
+    <View style={styles.calendarGrid}>
+      {cells.map((cell) => (
+        <View
+          key={cell}
+          style={[
+            styles.calendarCell,
+            cell < progress
+              ? { backgroundColor: Colors.scaleGreen }
+              : { backgroundColor: Colors.neutral },
+          ]}
+        />
+      ))}
+    </View>
+  );
+}
 
 export default function TodayScreen() {
   // VARIABLES ////////////////////////////////////////////////////////////////
   const [screenWidth, setScreenWidth] = useState(0);
   const [isToggled, setToggled] = useState(false);
   const [selectedChallenge, setSelectedChallenge] = useState("75 Hard");
+  const [open, setOpen] = useState(false);
+  const [items, setItems] = useState([
+    { label: "75 Hard", value: "75 Hard" },
+    { label: "75 Medium", value: "75 Medium" },
+    { label: "75 Soft", value: "75 Soft" },
+  ]);
   const [isEditing, setIsEditing] = useState(false);
   const [originalComment, setOriginalComment] = useState(
     "This is my first time attempting this challenge, and hopefully the last!\n\nInstead of reading 10 pages a day, I will be solving at least 1 leetcode a day."
   );
-  const [editedComment, setEditedComment] = useState(
-    "This is my first time attempting this challenge, and hopefully the last!\n\nInstead of reading 10 pages a day, I will be solving at least 1 leetcode a day."
-  );
+  const [editedComment, setEditedComment] = useState(originalComment);
 
   // DUMMY DATA ///////////////////////////////////////////////////////////////
 
@@ -61,7 +91,7 @@ export default function TodayScreen() {
       "You must complete each the following everyday:\n- 45-minute indoor workout.\n- 45-minute outdoor workout.\n- Drink 1 gallon (3.8L) of water.\n- Read 10 pages of a self-improvement book.\n- Take a progress photo.",
   }; //getChallenge();
 
-  // HANDLE FUNCTIONS /////////////////////////////////////////////////////////
+  // FUNCTIONS ////////////////////////////////////////////////////////////////
 
   const handleToggle = () => {
     setToggled(!isToggled);
@@ -95,6 +125,7 @@ export default function TodayScreen() {
 
   return (
     <ScrollView
+      nestedScrollEnabled={true}
       contentContainerStyle={styles.container}
       showsVerticalScrollIndicator={false}
     >
@@ -123,46 +154,44 @@ export default function TodayScreen() {
         <View style={styles.subContainer}>
           {/* Streak and Calendar */}
           <View style={styles.overallChallengeContainer}>
-            <Image source={dummyStreak} />
-            <Image source={dummyCalendar} />
+            <Streak progress={progress} />
+            <Calendar progress={progress} total={total} />
           </View>
-
           {/* Rules */}
           <View style={styles.overallOtherContainer}>
             <View style={styles.top}>
-              <Text style={styles.title}>Rules</Text>
-              <View style={styles.pickerContainer}>
-                <Picker
-                  style={styles.picker}
-                  selectedValue={selectedChallenge}
-                  onValueChange={(itemValue) => setSelectedChallenge(itemValue)}
-                  mode="dropdown"
-                >
-                  {challenges.map((ch) => (
-                    <Picker.Item key={ch} label={ch} value={ch} />
-                  ))}
-                </Picker>
-              </View>
+              <Text style={styles.title}>Rules:</Text>
+              <DropDownPicker
+                open={open}
+                value={selectedChallenge}
+                items={items}
+                setOpen={setOpen}
+                setValue={setSelectedChallenge}
+                setItems={setItems}
+                listMode="SCROLLVIEW"
+                containerStyle={[styles.pickerContainer, styles.shadow]}
+                style={styles.picker}
+                dropDownContainerStyle={styles.dropDownContainer}
+              />
             </View>
             <View style={[styles.bottom, styles.shadow]}>
               <Text style={styles.text}>{challenge.rules}</Text>
             </View>
           </View>
-
           {/* Comments */}
           <View style={styles.overallOtherContainer}>
             <View style={styles.top}>
-              <Text style={styles.title}>Comments</Text>
+              <Text style={styles.title}>Comments:</Text>
               <View style={styles.iconGroup}>
                 {isEditing ? (
-                  <View style={styles.horiz}>
+                  <>
                     <Pressable onPress={handleSaveComment}>
                       <Image style={styles.editIcon} source={saveIcon} />
                     </Pressable>
                     <Pressable onPress={handleCancelComment}>
                       <Image style={styles.editIcon} source={cancelIcon} />
                     </Pressable>
-                  </View>
+                  </>
                 ) : (
                   <Pressable onPress={() => setIsEditing(true)}>
                     <Image style={styles.editIcon} source={editIcon} />
@@ -415,17 +444,21 @@ const styles = StyleSheet.create({
   },
   overallChallengeContainer: {
     flexDirection: "row",
+    alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 10,
+    width: "100%",
+    columnGap: 10,
   },
   overallOtherContainer: {
     flexDirection: "column",
-    rowGap: 10,
+    rowGap: 15,
   },
   top: {
     paddingHorizontal: 10,
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "center",
   },
   bottom: {
     backgroundColor: Colors.light,
@@ -438,17 +471,21 @@ const styles = StyleSheet.create({
     color: Colors.dark,
   },
   pickerContainer: {
-    height: 40,
-    width: 150,
+    width: 125,
     justifyContent: "center",
-    backgroundColor: Colors.light,
-    borderRadius: 5,
+    margin: 0,
+    padding: 0,
   },
   picker: {
-    height: 40,
-    width: 150,
-    color: Colors.dark,
-    fontFamily: Fonts.regular,
+    borderWidth: 0,
+    margin: 0,
+    padding: 0,
+    backgroundColor: Colors.light,
+  },
+  dropDownContainer: {
+    borderWidth: 0,
+    margin: 0,
+    padding: 0,
   },
   editIcon: {
     width: 20,
@@ -463,8 +500,38 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: Colors.dark,
   },
-  horiz: {
+  iconGroup: {
     flexDirection: "row",
     columnGap: 5,
+  },
+  streakContainer: {
+    width: 125,
+    height: 125,
+    justifyContent: "center",
+    alignItems: "center",
+    position: "relative",
+  },
+  fireIcon: {
+    width: "100%",
+    height: "100%",
+  },
+  streakText: {
+    position: "absolute",
+    fontSize: 32,
+    fontFamily: Fonts.bold,
+    color: Colors.light,
+  },
+  calendarGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    width: 222,
+    rowGap: 2,
+    columnGap: 2,
+    borderRadius: 15,
+    overflow: "hidden",
+  },
+  calendarCell: {
+    width: 30,
+    height: 12,
   },
 });
