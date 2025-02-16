@@ -1,7 +1,9 @@
-// TODO: color interpolation function in theme.js and used for pie bar
+// FRONTEND
 // TODO: today screen popups and change icon containers to pressables
 // TODO: create screens for when there is no challenge selected
-// TODO: retrieve user data and challenge data
+
+// BACKEND
+// TODO: auth => user models => user routes + user controllers => frontend API
 
 import React, { useState } from "react";
 import {
