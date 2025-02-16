@@ -6,8 +6,12 @@ import {
   Lexend_700Bold,
 } from "@expo-google-fonts/lexend";
 import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
 
 import TabNavigator from "./src/navigation/TabNavigator";
+import SettingsStack from "./src/navigation/SettingsStack";
+
+const Stack = createStackNavigator();
 
 export default function App() {
   let [fontsLoaded] = useFonts({
@@ -25,7 +29,10 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <TabNavigator />
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Main" component={TabNavigator} />
+        <Stack.Screen name="SettingsStack" component={SettingsStack} />
+      </Stack.Navigator>
     </NavigationContainer>
   );
 }

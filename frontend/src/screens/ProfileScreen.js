@@ -6,11 +6,14 @@ import clogImage from "../../assets/clog.png";
 
 export default function ProfileScreen() {
   const navigation = useNavigation();
+
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => navigation.navigate("Settings")}>
+      {/* Clog Icon to access Settings */}
+      <TouchableOpacity onPress={() => navigation.navigate("SettingsStack")} style={styles.clogButton}>
         <Image source={clogImage} style={styles.clogIcon} />
       </TouchableOpacity>
+
       {/* Avatar and User Info */}
       <View style={styles.profileSection}>
         <Image source={catImage} style={styles.avatar} />
@@ -29,8 +32,10 @@ export default function ProfileScreen() {
           </View>
         </View>
       </View>
+
       {/* Bio Section */}
       <TextInput placeholder="Bio" style={styles.bioInput} />
+
       {/* Grid Layout for Boxes */}
       <View style={styles.gridContainer}>
         {[...Array(9)].map((_, index) => (
@@ -47,13 +52,14 @@ const styles = {
     backgroundColor: "#f0f0f0",
     flex: 1,
   },
-  clogIcon: {
+  clogButton: {
     position: "absolute",
-    top: 10,  
-    right: 10, 
-    width: 40, 
+    top: 10,
+    right: 10,
+  },
+  clogIcon: {
+    width: 40,
     height: 40,
-    zIndex: 10, 
   },
   profileSection: {
     flexDirection: "row",
