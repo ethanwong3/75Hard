@@ -1,5 +1,4 @@
 // FRONTEND
-// TODO: today screen popups and change icon containers to pressables
 // TODO: create screens for when there is no challenge selected
 
 // BACKEND
@@ -14,10 +13,15 @@ import {
   Image,
   ScrollView,
   TextInput,
+  Modal,
+  TouchableWithoutFeedback,
 } from "react-native";
 import PieChart from "react-native-pie-chart";
 import * as Progress from "react-native-progress";
 import DropDownPicker from "react-native-dropdown-picker";
+
+import DietModal from "../components/DietModal";
+import WaterModal from "../components/WaterModal";
 
 import { Colors, Fonts } from "../styles/theme";
 import dietIcon from "../assets/dietIcon.png";
@@ -59,9 +63,11 @@ function Calendar({ progress, total }) {
 }
 
 export default function TodayScreen() {
-  // VARIABLES ////////////////////////////////////////////////////////////////
+  // SCREEN
   const [screenWidth, setScreenWidth] = useState(0);
   const [isToggled, setToggled] = useState(false);
+
+  // TAB (OVERALL): states for rules
   const [selectedChallenge, setSelectedChallenge] = useState("75 Hard");
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState([
@@ -69,29 +75,35 @@ export default function TodayScreen() {
     { label: "75 Medium", value: "75 Medium" },
     { label: "75 Soft", value: "75 Soft" },
   ]);
+
+  // TAB (OVERALL): states for comment
   const [isEditing, setIsEditing] = useState(false);
   const [originalComment, setOriginalComment] = useState(
     "This is my first time attempting this challenge, and hopefully the last!\n\nInstead of reading 10 pages a day, I will be solving at least 1 leetcode a day."
   );
   const [editedComment, setEditedComment] = useState(originalComment);
 
+  // TODAY: states for diet and water popup
+  const [showDietModal, setShowDietModal] = useState(false);
+  const [showWaterModal, setShowWaterModal] = useState(false);
+  const [inputKcal, setInputKcal] = useState("");
+  const [inputProtein, setInputProtein] = useState("");
+  const [inputCarbs, setInputCarbs] = useState("");
+  const [inputFats, setInputFats] = useState("");
+  const [waterAmount, setWaterAmount] = useState("");
+
   // DUMMY DATA ///////////////////////////////////////////////////////////////
 
-  // global data
-  const challenges = ["75 Hard", "75 Medium", "75 Soft"];
-
-  // user data
-  const [k, p, c, f] = [500, 15, 60, 90]; // getUserMacroProgress();
-  const [kcal, protein, carbohydrate, fat] = [1000, 100, 100, 100]; // getUserMacroGoals();
-  const [water, study, workout, photo] = [3, 1, 1, 0]; // getUserOtherProgress();
-  const [progress, total] = [15, 75]; // getUserChallengeProgress();
-
-  // challenge data
+  // probably something like getUser() getUserDailyProgress() getUserTargets() getUserOverallProgress() getUserChallenge()
+  const [k, p, c, f] = [500, 15, 60, 90];
+  const [kcal, protein, carbohydrate, fat] = [1000, 100, 100, 100];
+  const [water, study, workout, photo] = [3000, 1, 1, 0];
+  const [progress, total] = [15, 75];
   const challenge = {
     name: "75 Hard",
     rules:
       "You must complete each the following everyday:\n- 45-minute indoor workout.\n- 45-minute outdoor workout.\n- Drink 1 gallon (3.8L) of water.\n- Read 10 pages of a self-improvement book.\n- Take a progress photo.",
-  }; //getChallenge();
+  };
 
   // FUNCTIONS ////////////////////////////////////////////////////////////////
 
@@ -107,6 +119,17 @@ export default function TodayScreen() {
   const handleCancelComment = () => {
     setEditedComment(originalComment);
     setIsEditing(false);
+  };
+
+  const handleEat = () => {
+    // In a real app, you’d update k, p, c, f based on input values.
+    // For now, simply close the modal.
+    setShowDietModal(false);
+  };
+
+  const handleDrink = () => {
+    // In a real app, update water state here.
+    setShowWaterModal(false);
   };
 
   const convertToScaleColor = (val) => {
@@ -281,9 +304,18 @@ export default function TodayScreen() {
                   animated={true}
                 />
               </View>
-              <View style={[styles.iconContainer, styles.shadow]}>
-                <Image style={styles.icon} source={dietIcon} />
-              </View>
+              <Pressable
+                onPress={() => {
+                  if (k / kcal < 1) {
+                    setShowDietModal(true);
+                  }
+                }}
+                disabled={k / kcal >= 1}
+              >
+                <View style={[styles.iconContainer, styles.shadow]}>
+                  <Image style={styles.icon} source={dietIcon} />
+                </View>
+              </Pressable>
             </View>
 
             <View style={styles.specificProgressContainer}>
@@ -292,16 +324,25 @@ export default function TodayScreen() {
                   width={screenWidth}
                   height={20}
                   borderRadius={10}
-                  progress={water / 3.8}
-                  color={convertToScaleColor(water / 3.8)}
+                  progress={water / 3800}
+                  color={convertToScaleColor(water / 3800)}
                   unfilledColor="#D9D9D9"
                   borderWidth={0}
                   animated={true}
                 />
               </View>
-              <View style={[styles.iconContainer, styles.shadow]}>
-                <Image style={styles.icon} source={waterIcon} />
-              </View>
+              <Pressable
+                onPress={() => {
+                  if (water / 3.8 < 1) {
+                    setShowWaterModal(true);
+                  }
+                }}
+                disabled={water / 3.8 >= 1}
+              >
+                <View style={[styles.iconContainer, styles.shadow]}>
+                  <Image style={styles.icon} source={waterIcon} />
+                </View>
+              </Pressable>
             </View>
 
             <View style={styles.specificProgressContainer}>
@@ -317,9 +358,15 @@ export default function TodayScreen() {
                   animated={true}
                 />
               </View>
-              <View style={[styles.iconContainer, styles.shadow]}>
-                <Image style={styles.icon} source={studyIcon} />
-              </View>
+              <Pressable
+                onPress={() => {
+                  // Increment study by 1 (if not full)
+                }}
+              >
+                <View style={[styles.iconContainer, styles.shadow]}>
+                  <Image style={styles.icon} source={studyIcon} />
+                </View>
+              </Pressable>
             </View>
 
             <View style={styles.specificProgressContainer}>
@@ -335,9 +382,15 @@ export default function TodayScreen() {
                   animated={true}
                 />
               </View>
-              <View style={[styles.iconContainer, styles.shadow]}>
-                <Image style={styles.icon} source={workoutIcon} />
-              </View>
+              <Pressable
+                onPress={() => {
+                  // Increment workout by 1 (if not full)
+                }}
+              >
+                <View style={[styles.iconContainer, styles.shadow]}>
+                  <Image style={styles.icon} source={workoutIcon} />
+                </View>
+              </Pressable>
             </View>
 
             <View style={styles.specificProgressContainer}>
@@ -353,9 +406,15 @@ export default function TodayScreen() {
                   animated={true}
                 />
               </View>
-              <View style={[styles.iconContainer, styles.shadow]}>
-                <Image style={styles.icon} source={photoIcon} />
-              </View>
+              <Pressable
+                onPress={() => {
+                  // Increment photo by 1 (if not full)
+                }}
+              >
+                <View style={[styles.iconContainer, styles.shadow]}>
+                  <Image style={styles.icon} source={photoIcon} />
+                </View>
+              </Pressable>
             </View>
           </View>
         </View>
