@@ -147,277 +147,304 @@ export default function TodayScreen() {
   // SCREEN ///////////////////////////////////////////////////////////////////
 
   return (
-    <ScrollView
-      nestedScrollEnabled={true}
-      contentContainerStyle={styles.container}
-      showsVerticalScrollIndicator={false}
-    >
-      {/* Toggle Container */}
-      <View style={[styles.toggleContainer, styles.shadow]}>
-        <Pressable
-          style={[styles.toggleButton, !isToggled && styles.invertedButton]}
-          onPress={handleToggle}
-        >
-          <Text style={[styles.toggleText, !isToggled && styles.invertedText]}>
-            Today
-          </Text>
-        </Pressable>
-        <Pressable
-          style={[styles.toggleButton, isToggled && styles.invertedButton]}
-          onPress={handleToggle}
-        >
-          <Text style={[styles.toggleText, isToggled && styles.invertedText]}>
-            Overall
-          </Text>
-        </Pressable>
-      </View>
+    <>
+      <ScrollView
+        nestedScrollEnabled={true}
+        contentContainerStyle={styles.container}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Toggle Container */}
+        <View style={[styles.toggleContainer, styles.shadow]}>
+          <Pressable
+            style={[styles.toggleButton, !isToggled && styles.invertedButton]}
+            onPress={handleToggle}
+          >
+            <Text
+              style={[styles.toggleText, !isToggled && styles.invertedText]}
+            >
+              Today
+            </Text>
+          </Pressable>
+          <Pressable
+            style={[styles.toggleButton, isToggled && styles.invertedButton]}
+            onPress={handleToggle}
+          >
+            <Text style={[styles.toggleText, isToggled && styles.invertedText]}>
+              Overall
+            </Text>
+          </Pressable>
+        </View>
 
-      {/* Conditional Screen Content */}
-      {isToggled ? (
-        <View style={styles.subContainer}>
-          {/* Streak and Calendar */}
-          <View style={styles.overallChallengeContainer}>
-            <Streak progress={progress} />
-            <Calendar progress={progress} total={total} />
-          </View>
-          {/* Rules */}
-          <View style={styles.overallOtherContainer}>
-            <View style={styles.top}>
-              <Text style={styles.title}>Rules:</Text>
-              <DropDownPicker
-                open={open}
-                value={selectedChallenge}
-                items={items}
-                setOpen={setOpen}
-                setValue={setSelectedChallenge}
-                setItems={setItems}
-                listMode="SCROLLVIEW"
-                containerStyle={[styles.pickerContainer, styles.shadow]}
-                style={styles.picker}
-                dropDownContainerStyle={styles.dropDownContainer}
-              />
+        {/* Conditional Screen Content */}
+        {isToggled ? (
+          <View style={styles.subContainer}>
+            {/* Streak and Calendar */}
+            <View style={styles.overallChallengeContainer}>
+              <Streak progress={progress} />
+              <Calendar progress={progress} total={total} />
             </View>
-            <View style={[styles.bottom, styles.shadow]}>
-              <Text style={styles.text}>{challenge.rules}</Text>
+            {/* Rules */}
+            <View style={styles.overallOtherContainer}>
+              <View style={styles.top}>
+                <Text style={styles.title}>Rules:</Text>
+                <DropDownPicker
+                  open={open}
+                  value={selectedChallenge}
+                  items={items}
+                  setOpen={setOpen}
+                  setValue={setSelectedChallenge}
+                  setItems={setItems}
+                  listMode="SCROLLVIEW"
+                  containerStyle={[styles.pickerContainer, styles.shadow]}
+                  style={styles.picker}
+                  dropDownContainerStyle={styles.dropDownContainer}
+                />
+              </View>
+              <View style={[styles.bottom, styles.shadow]}>
+                <Text style={styles.text}>{challenge.rules}</Text>
+              </View>
             </View>
-          </View>
-          {/* Comments */}
-          <View style={styles.overallOtherContainer}>
-            <View style={styles.top}>
-              <Text style={styles.title}>Comments:</Text>
-              <View style={styles.iconGroup}>
+            {/* Comments */}
+            <View style={styles.overallOtherContainer}>
+              <View style={styles.top}>
+                <Text style={styles.title}>Comments:</Text>
+                <View style={styles.iconGroup}>
+                  {isEditing ? (
+                    <>
+                      <Pressable onPress={handleSaveComment}>
+                        <Image style={styles.editIcon} source={saveIcon} />
+                      </Pressable>
+                      <Pressable onPress={handleCancelComment}>
+                        <Image style={styles.editIcon} source={cancelIcon} />
+                      </Pressable>
+                    </>
+                  ) : (
+                    <Pressable onPress={() => setIsEditing(true)}>
+                      <Image style={styles.editIcon} source={editIcon} />
+                    </Pressable>
+                  )}
+                </View>
+              </View>
+              <View style={[styles.bottom, styles.shadow]}>
                 {isEditing ? (
-                  <>
-                    <Pressable onPress={handleSaveComment}>
-                      <Image style={styles.editIcon} source={saveIcon} />
-                    </Pressable>
-                    <Pressable onPress={handleCancelComment}>
-                      <Image style={styles.editIcon} source={cancelIcon} />
-                    </Pressable>
-                  </>
+                  <TextInput
+                    style={[styles.text, styles.commentInput]}
+                    multiline
+                    value={editedComment}
+                    onChangeText={setEditedComment}
+                  />
                 ) : (
-                  <Pressable onPress={() => setIsEditing(true)}>
-                    <Image style={styles.editIcon} source={editIcon} />
-                  </Pressable>
+                  <Text style={styles.text}>{editedComment}</Text>
                 )}
               </View>
             </View>
-            <View style={[styles.bottom, styles.shadow]}>
-              {isEditing ? (
-                <TextInput
-                  style={[styles.text, styles.commentInput]}
-                  multiline
-                  value={editedComment}
-                  onChangeText={setEditedComment}
+          </View>
+        ) : (
+          <View style={styles.subContainer}>
+            {/* Diet Pie Charts */}
+            <View style={styles.allMacroContainer}>
+              <View style={styles.specificMacroContainer}>
+                <PieChart
+                  widthAndHeight={120}
+                  series={[
+                    { value: protein - p, color: Colors.neutral },
+                    { value: p, color: convertToScaleColor(p / protein) },
+                  ]}
                 />
-              ) : (
-                <Text style={styles.text}>{editedComment}</Text>
-              )}
+                <Text style={styles.text}>Protein</Text>
+                <Text style={styles.text}>
+                  {p}/{protein}(g)
+                </Text>
+              </View>
+              <View style={styles.specificMacroContainer}>
+                <PieChart
+                  widthAndHeight={120}
+                  series={[
+                    { value: carbohydrate - c, color: Colors.neutral },
+                    { value: c, color: convertToScaleColor(c / carbohydrate) },
+                  ]}
+                />
+                <Text style={styles.text}>Carbohydrates</Text>
+                <Text style={styles.text}>
+                  {c}/{carbohydrate}(g)
+                </Text>
+              </View>
+              <View style={styles.specificMacroContainer}>
+                <PieChart
+                  widthAndHeight={120}
+                  series={[
+                    { value: fat - f, color: Colors.neutral },
+                    { value: f, color: convertToScaleColor(f / fat) },
+                  ]}
+                />
+                <Text style={styles.text}>Fats</Text>
+                <Text style={styles.text}>
+                  {f}/{fat}(g)
+                </Text>
+              </View>
+            </View>
+
+            {/* Bar Progress and Buttons */}
+            <View style={styles.allProgressContainer}>
+              <View style={styles.specificProgressContainer}>
+                <View
+                  style={styles.progressBarContainer}
+                  onLayout={(event) => {
+                    const { width } = event.nativeEvent.layout;
+                    setScreenWidth(width);
+                  }}
+                >
+                  <Progress.Bar
+                    width={screenWidth}
+                    height={20}
+                    borderRadius={10}
+                    progress={k / kcal}
+                    color={convertToScaleColor(k / kcal)}
+                    unfilledColor="#D9D9D9"
+                    borderWidth={0}
+                    animated={true}
+                  />
+                </View>
+                <Pressable
+                  onPress={() => {
+                    if (k / kcal < 1) {
+                      setShowDietModal(true);
+                    }
+                  }}
+                  disabled={k / kcal >= 1}
+                >
+                  <View style={[styles.iconContainer, styles.shadow]}>
+                    <Image style={styles.icon} source={dietIcon} />
+                  </View>
+                </Pressable>
+              </View>
+
+              <View style={styles.specificProgressContainer}>
+                <View style={styles.progressBarContainer}>
+                  <Progress.Bar
+                    width={screenWidth}
+                    height={20}
+                    borderRadius={10}
+                    progress={water / 3800}
+                    color={convertToScaleColor(water / 3800)}
+                    unfilledColor="#D9D9D9"
+                    borderWidth={0}
+                    animated={true}
+                  />
+                </View>
+                <Pressable
+                  onPress={() => {
+                    if (water / 3800 < 1) {
+                      setShowWaterModal(true);
+                    }
+                  }}
+                  disabled={water / 3800 >= 1}
+                >
+                  <View style={[styles.iconContainer, styles.shadow]}>
+                    <Image style={styles.icon} source={waterIcon} />
+                  </View>
+                </Pressable>
+              </View>
+
+              <View style={styles.specificProgressContainer}>
+                <View style={styles.progressBarContainer}>
+                  <Progress.Bar
+                    width={screenWidth}
+                    height={20}
+                    borderRadius={10}
+                    progress={study / 10}
+                    color={convertToScaleColor(study / 10)}
+                    unfilledColor="#D9D9D9"
+                    borderWidth={0}
+                    animated={true}
+                  />
+                </View>
+                <Pressable
+                  onPress={() => {
+                    // Increment study by 1 (if not full)
+                  }}
+                >
+                  <View style={[styles.iconContainer, styles.shadow]}>
+                    <Image style={styles.icon} source={studyIcon} />
+                  </View>
+                </Pressable>
+              </View>
+
+              <View style={styles.specificProgressContainer}>
+                <View style={styles.progressBarContainer}>
+                  <Progress.Bar
+                    width={screenWidth}
+                    height={20}
+                    borderRadius={10}
+                    progress={workout / 2}
+                    color={convertToScaleColor(workout / 2)}
+                    unfilledColor="#D9D9D9"
+                    borderWidth={0}
+                    animated={true}
+                  />
+                </View>
+                <Pressable
+                  onPress={() => {
+                    // Increment workout by 1 (if not full)
+                  }}
+                >
+                  <View style={[styles.iconContainer, styles.shadow]}>
+                    <Image style={styles.icon} source={workoutIcon} />
+                  </View>
+                </Pressable>
+              </View>
+
+              <View style={styles.specificProgressContainer}>
+                <View style={styles.progressBarContainer}>
+                  <Progress.Bar
+                    width={screenWidth}
+                    height={20}
+                    borderRadius={10}
+                    progress={photo / 1}
+                    color={convertToScaleColor(photo / 1)}
+                    unfilledColor="#D9D9D9"
+                    borderWidth={0}
+                    animated={true}
+                  />
+                </View>
+                <Pressable
+                  onPress={() => {
+                    // Increment photo by 1 (if not full)
+                  }}
+                >
+                  <View style={[styles.iconContainer, styles.shadow]}>
+                    <Image style={styles.icon} source={photoIcon} />
+                  </View>
+                </Pressable>
+              </View>
             </View>
           </View>
-        </View>
-      ) : (
-        <View style={styles.subContainer}>
-          {/* Diet Pie Charts */}
-          <View style={styles.allMacroContainer}>
-            <View style={styles.specificMacroContainer}>
-              <PieChart
-                widthAndHeight={120}
-                series={[
-                  { value: protein - p, color: Colors.neutral },
-                  { value: p, color: convertToScaleColor(p / protein) },
-                ]}
-              />
-              <Text style={styles.text}>Protein</Text>
-              <Text style={styles.text}>
-                {p}/{protein}(g)
-              </Text>
-            </View>
-            <View style={styles.specificMacroContainer}>
-              <PieChart
-                widthAndHeight={120}
-                series={[
-                  { value: carbohydrate - c, color: Colors.neutral },
-                  { value: c, color: convertToScaleColor(c / carbohydrate) },
-                ]}
-              />
-              <Text style={styles.text}>Carbohydrates</Text>
-              <Text style={styles.text}>
-                {c}/{carbohydrate}(g)
-              </Text>
-            </View>
-            <View style={styles.specificMacroContainer}>
-              <PieChart
-                widthAndHeight={120}
-                series={[
-                  { value: fat - f, color: Colors.neutral },
-                  { value: f, color: convertToScaleColor(f / fat) },
-                ]}
-              />
-              <Text style={styles.text}>Fats</Text>
-              <Text style={styles.text}>
-                {f}/{fat}(g)
-              </Text>
-            </View>
-          </View>
+        )}
+      </ScrollView>
 
-          {/* Bar Progress and Buttons */}
-          <View style={styles.allProgressContainer}>
-            <View style={styles.specificProgressContainer}>
-              <View
-                style={styles.progressBarContainer}
-                onLayout={(event) => {
-                  const { width } = event.nativeEvent.layout;
-                  setScreenWidth(width);
-                }}
-              >
-                <Progress.Bar
-                  width={screenWidth}
-                  height={20}
-                  borderRadius={10}
-                  progress={k / kcal}
-                  color={convertToScaleColor(k / kcal)}
-                  unfilledColor="#D9D9D9"
-                  borderWidth={0}
-                  animated={true}
-                />
-              </View>
-              <Pressable
-                onPress={() => {
-                  if (k / kcal < 1) {
-                    setShowDietModal(true);
-                  }
-                }}
-                disabled={k / kcal >= 1}
-              >
-                <View style={[styles.iconContainer, styles.shadow]}>
-                  <Image style={styles.icon} source={dietIcon} />
-                </View>
-              </Pressable>
-            </View>
+      {/* Render modals outside the ScrollView */}
+      <DietModal
+        visible={showDietModal}
+        onClose={() => setShowDietModal(false)}
+        inputKcal={inputKcal}
+        setInputKcal={setInputKcal}
+        inputProtein={inputProtein}
+        setInputProtein={setInputProtein}
+        inputCarbs={inputCarbs}
+        setInputCarbs={setInputCarbs}
+        inputFats={inputFats}
+        setInputFats={setInputFats}
+        onEat={handleEat}
+      />
 
-            <View style={styles.specificProgressContainer}>
-              <View style={styles.progressBarContainer}>
-                <Progress.Bar
-                  width={screenWidth}
-                  height={20}
-                  borderRadius={10}
-                  progress={water / 3800}
-                  color={convertToScaleColor(water / 3800)}
-                  unfilledColor="#D9D9D9"
-                  borderWidth={0}
-                  animated={true}
-                />
-              </View>
-              <Pressable
-                onPress={() => {
-                  if (water / 3.8 < 1) {
-                    setShowWaterModal(true);
-                  }
-                }}
-                disabled={water / 3.8 >= 1}
-              >
-                <View style={[styles.iconContainer, styles.shadow]}>
-                  <Image style={styles.icon} source={waterIcon} />
-                </View>
-              </Pressable>
-            </View>
-
-            <View style={styles.specificProgressContainer}>
-              <View style={styles.progressBarContainer}>
-                <Progress.Bar
-                  width={screenWidth}
-                  height={20}
-                  borderRadius={10}
-                  progress={study / 10}
-                  color={convertToScaleColor(study / 10)}
-                  unfilledColor="#D9D9D9"
-                  borderWidth={0}
-                  animated={true}
-                />
-              </View>
-              <Pressable
-                onPress={() => {
-                  // Increment study by 1 (if not full)
-                }}
-              >
-                <View style={[styles.iconContainer, styles.shadow]}>
-                  <Image style={styles.icon} source={studyIcon} />
-                </View>
-              </Pressable>
-            </View>
-
-            <View style={styles.specificProgressContainer}>
-              <View style={styles.progressBarContainer}>
-                <Progress.Bar
-                  width={screenWidth}
-                  height={20}
-                  borderRadius={10}
-                  progress={workout / 2}
-                  color={convertToScaleColor(workout / 2)}
-                  unfilledColor="#D9D9D9"
-                  borderWidth={0}
-                  animated={true}
-                />
-              </View>
-              <Pressable
-                onPress={() => {
-                  // Increment workout by 1 (if not full)
-                }}
-              >
-                <View style={[styles.iconContainer, styles.shadow]}>
-                  <Image style={styles.icon} source={workoutIcon} />
-                </View>
-              </Pressable>
-            </View>
-
-            <View style={styles.specificProgressContainer}>
-              <View style={styles.progressBarContainer}>
-                <Progress.Bar
-                  width={screenWidth}
-                  height={20}
-                  borderRadius={10}
-                  progress={photo / 1}
-                  color={convertToScaleColor(photo / 1)}
-                  unfilledColor="#D9D9D9"
-                  borderWidth={0}
-                  animated={true}
-                />
-              </View>
-              <Pressable
-                onPress={() => {
-                  // Increment photo by 1 (if not full)
-                }}
-              >
-                <View style={[styles.iconContainer, styles.shadow]}>
-                  <Image style={styles.icon} source={photoIcon} />
-                </View>
-              </Pressable>
-            </View>
-          </View>
-        </View>
-      )}
-    </ScrollView>
+      <WaterModal
+        visible={showWaterModal}
+        onClose={() => setShowWaterModal(false)}
+        waterAmount={waterAmount}
+        setWaterAmount={setWaterAmount}
+        onDrink={handleDrink}
+      />
+    </>
   );
 }
 
