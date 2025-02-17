@@ -6,9 +6,13 @@ import {
   Lexend_700Bold,
 } from "@expo-google-fonts/lexend";
 import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
 
 import useAuth from "./src/hooks/useAuth";
 import TabNavigator from "./src/navigation/TabNavigator";
+import SettingsStack from "./src/navigation/SettingsStack";
+
+const Stack = createStackNavigator();
 import AuthStack from "./src/navigation/AuthStack";
 
 export default function App() {
@@ -32,6 +36,10 @@ export default function App() {
 
   return (
     <NavigationContainer>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Main" component={TabNavigator} />
+        <Stack.Screen name="SettingsStack" component={SettingsStack} />
+      </Stack.Navigator>
       {user ? <TabNavigator /> : <AuthStack />}
     </NavigationContainer>
   );

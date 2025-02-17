@@ -8,7 +8,7 @@ import TodayScreen from "../screens/TodayScreen";
 import ActivityScreen from "../screens/ActivityScreen";
 import UploadScreen from "../screens/UploadScreen";
 import SocialScreen from "../screens/SocialScreen";
-import ProfileScreen from "../screens/ProfileScreen";
+import SettingsStack from "./SettingsStack";
 
 import logo from "../assets/logo.png";
 import todayIcon from "../assets/todayIcon.png";
@@ -16,6 +16,7 @@ import activityIcon from "../assets/activityIcon.png";
 import uploadIcon from "../assets/uploadIcon_.png"; // need to combine the two parts
 import socialIcon from "../assets/socialIcon.png";
 import profileIcon from "../assets/profileIcon.png";
+import ProfileScreen from "../screens/ProfileScreen";
 
 const Tab = createBottomTabNavigator();
 
