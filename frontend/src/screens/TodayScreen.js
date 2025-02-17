@@ -13,8 +13,6 @@ import {
   Image,
   ScrollView,
   TextInput,
-  Modal,
-  TouchableWithoutFeedback,
 } from "react-native";
 import PieChart from "react-native-pie-chart";
 import * as Progress from "react-native-progress";

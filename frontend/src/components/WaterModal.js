@@ -1,4 +1,3 @@
-// src/components/WaterModal.js
 import React from "react";
 import {
   View,
@@ -7,6 +6,7 @@ import {
   Pressable,
   TextInput,
   TouchableWithoutFeedback,
+  Modal, // <-- Import Modal
 } from "react-native";
 import { Image } from "react-native";
 import { Colors, Fonts } from "../styles/theme";
@@ -20,30 +20,37 @@ const WaterModal = ({
   onDrink,
 }) => {
   return (
-    <TouchableWithoutFeedback onPress={onClose}>
-      <View style={styles.modalOverlay}>
-        <TouchableWithoutFeedback>
-          <View style={styles.modalContent}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalHeaderText}>Drink Water</Text>
-              <Pressable onPress={onClose}>
-                <Image style={styles.modalIcon} source={cancelIcon} />
+    <Modal
+      transparent={true}
+      visible={visible} // Only visible when true
+      animationType="fade"
+      onRequestClose={onClose}
+    >
+      <TouchableWithoutFeedback onPress={onClose}>
+        <View style={styles.modalOverlay}>
+          <TouchableWithoutFeedback>
+            <View style={styles.modalContent}>
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalHeaderText}>Drink Water</Text>
+                <Pressable onPress={onClose}>
+                  <Image style={styles.modalIcon} source={cancelIcon} />
+                </Pressable>
+              </View>
+              <TextInput
+                style={styles.waterInput}
+                placeholder="Enter water amount (ml)"
+                keyboardType="numeric"
+                value={waterAmount}
+                onChangeText={setWaterAmount}
+              />
+              <Pressable style={styles.modalButton} onPress={onDrink}>
+                <Text style={styles.modalButtonText}>Drink</Text>
               </Pressable>
             </View>
-            <TextInput
-              style={styles.waterInput}
-              placeholder="Enter water amount (ml)"
-              keyboardType="numeric"
-              value={waterAmount}
-              onChangeText={setWaterAmount}
-            />
-            <Pressable style={styles.modalButton} onPress={onDrink}>
-              <Text style={styles.modalButtonText}>Drink</Text>
-            </Pressable>
-          </View>
-        </TouchableWithoutFeedback>
-      </View>
-    </TouchableWithoutFeedback>
+          </TouchableWithoutFeedback>
+        </View>
+      </TouchableWithoutFeedback>
+    </Modal>
   );
 };
 
@@ -53,6 +60,11 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.5)",
     justifyContent: "center",
     alignItems: "center",
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
   },
   modalContent: {
     width: "90%",

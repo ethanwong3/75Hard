@@ -1,4 +1,3 @@
-// src/components/DietModal.js
 import React from "react";
 import {
   View,
@@ -7,10 +6,11 @@ import {
   Pressable,
   TextInput,
   TouchableWithoutFeedback,
+  Modal, // <-- Import Modal from react-native
 } from "react-native";
+import { Image } from "react-native";
 import { Colors, Fonts } from "../styles/theme";
 import cancelIcon from "../assets/cancelIcon.png";
-import { Image } from "react-native";
 
 const DietModal = ({
   visible,
@@ -26,61 +26,69 @@ const DietModal = ({
   onEat,
 }) => {
   return (
-    <TouchableWithoutFeedback onPress={onClose}>
-      <View style={styles.modalOverlay}>
-        <TouchableWithoutFeedback>
-          <View style={styles.modalContent}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalHeaderText}>Enter Macros</Text>
-              <Pressable onPress={onClose}>
-                <Image style={styles.modalIcon} source={cancelIcon} />
+    <Modal
+      transparent={true}
+      visible={visible} // Modal is visible only when visible prop is true
+      animationType="fade"
+      onRequestClose={onClose}
+    >
+      {/* Wrap with TouchableWithoutFeedback so clicking outside closes the modal */}
+      <TouchableWithoutFeedback onPress={onClose}>
+        <View style={styles.modalOverlay}>
+          <TouchableWithoutFeedback>
+            <View style={styles.modalContent}>
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalHeaderText}>Enter Macros</Text>
+                <Pressable onPress={onClose}>
+                  <Image style={styles.modalIcon} source={cancelIcon} />
+                </Pressable>
+              </View>
+              <View style={styles.modalTable}>
+                <View style={styles.tableHeader}>
+                  <Text style={styles.tableHeaderText}>Calories (kcal)</Text>
+                  <Text style={styles.tableHeaderText}>Protein (g)</Text>
+                  <Text style={styles.tableHeaderText}>Carbs (g)</Text>
+                  <Text style={styles.tableHeaderText}>Fats (g)</Text>
+                </View>
+                <View style={styles.tableRow}>
+                  <TextInput
+                    style={styles.tableInput}
+                    keyboardType="numeric"
+                    placeholder="0"
+                    value={inputKcal}
+                    onChangeText={setInputKcal}
+                  />
+                  <TextInput
+                    style={styles.tableInput}
+                    keyboardType="numeric"
+                    placeholder="0"
+                    value={inputProtein}
+                    onChangeText={setInputProtein}
+                  />
+                  <TextInput
+                    style={styles.tableInput}
+                    keyboardType="numeric"
+                    placeholder="0"
+                    value={inputCarbs}
+                    onChangeText={setInputCarbs}
+                  />
+                  <TextInput
+                    style={styles.tableInput}
+                    keyboardType="numeric"
+                    placeholder="0"
+                    value={inputFats}
+                    onChangeText={setInputFats}
+                  />
+                </View>
+              </View>
+              <Pressable style={styles.modalButton} onPress={onEat}>
+                <Text style={styles.modalButtonText}>Eat</Text>
               </Pressable>
             </View>
-            <View style={styles.modalTable}>
-              <View style={styles.tableHeader}>
-                <Text style={styles.tableHeaderText}>Calories (kcal)</Text>
-                <Text style={styles.tableHeaderText}>Protein (g)</Text>
-                <Text style={styles.tableHeaderText}>Carbs (g)</Text>
-                <Text style={styles.tableHeaderText}>Fats (g)</Text>
-              </View>
-              <View style={styles.tableRow}>
-                <TextInput
-                  style={styles.tableInput}
-                  keyboardType="numeric"
-                  placeholder="0"
-                  value={inputKcal}
-                  onChangeText={setInputKcal}
-                />
-                <TextInput
-                  style={styles.tableInput}
-                  keyboardType="numeric"
-                  placeholder="0"
-                  value={inputProtein}
-                  onChangeText={setInputProtein}
-                />
-                <TextInput
-                  style={styles.tableInput}
-                  keyboardType="numeric"
-                  placeholder="0"
-                  value={inputCarbs}
-                  onChangeText={setInputCarbs}
-                />
-                <TextInput
-                  style={styles.tableInput}
-                  keyboardType="numeric"
-                  placeholder="0"
-                  value={inputFats}
-                  onChangeText={setInputFats}
-                />
-              </View>
-            </View>
-            <Pressable style={styles.modalButton} onPress={onEat}>
-              <Text style={styles.modalButtonText}>Eat</Text>
-            </Pressable>
-          </View>
-        </TouchableWithoutFeedback>
-      </View>
-    </TouchableWithoutFeedback>
+          </TouchableWithoutFeedback>
+        </View>
+      </TouchableWithoutFeedback>
+    </Modal>
   );
 };
 
