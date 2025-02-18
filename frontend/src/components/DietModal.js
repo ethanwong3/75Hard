@@ -1,3 +1,4 @@
+// src/components/DietModal.js
 import React from "react";
 import {
   View,
@@ -6,7 +7,7 @@ import {
   Pressable,
   TextInput,
   TouchableWithoutFeedback,
-  Modal, // <-- Import Modal from react-native
+  Modal,
 } from "react-native";
 import { Image } from "react-native";
 import { Colors, Fonts } from "../styles/theme";
@@ -28,52 +29,83 @@ const DietModal = ({
   return (
     <Modal
       transparent={true}
-      visible={visible} // Modal is visible only when visible prop is true
+      visible={visible}
       animationType="fade"
       onRequestClose={onClose}
     >
-      {/* Wrap with TouchableWithoutFeedback so clicking outside closes the modal */}
+      {/* Clicking outside the modal closes it */}
       <TouchableWithoutFeedback onPress={onClose}>
         <View style={styles.modalOverlay}>
           <TouchableWithoutFeedback>
             <View style={styles.modalContent}>
+              {/* Modal Header */}
               <View style={styles.modalHeader}>
                 <Text style={styles.modalHeaderText}>Enter Macros</Text>
-                <Pressable onPress={onClose}>
+                <Pressable style={styles.cancelButton} onPress={onClose}>
                   <Image style={styles.modalIcon} source={cancelIcon} />
                 </Pressable>
               </View>
+
+              {/* Modal Table: Each macro is a row with label on left and input on right */}
               <View style={styles.modalTable}>
-                <View style={styles.tableHeader}>
-                  <Text style={styles.tableHeaderText}>Calories (kcal)</Text>
-                  <Text style={styles.tableHeaderText}>Protein (g)</Text>
-                  <Text style={styles.tableHeaderText}>Carbs (g)</Text>
-                  <Text style={styles.tableHeaderText}>Fats (g)</Text>
-                </View>
-                <View style={styles.tableRow}>
+                <View style={styles.modalRow}>
+                  <Text
+                    style={styles.rowLabel}
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
+                  >
+                    Calories (kcal):
+                  </Text>
                   <TextInput
-                    style={styles.tableInput}
+                    style={styles.rowInput}
                     keyboardType="numeric"
                     placeholder="0"
                     value={inputKcal}
                     onChangeText={setInputKcal}
                   />
+                </View>
+                <View style={styles.modalRow}>
+                  <Text
+                    style={styles.rowLabel}
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
+                  >
+                    Protein (g):
+                  </Text>
                   <TextInput
-                    style={styles.tableInput}
+                    style={styles.rowInput}
                     keyboardType="numeric"
                     placeholder="0"
                     value={inputProtein}
                     onChangeText={setInputProtein}
                   />
+                </View>
+                <View style={styles.modalRow}>
+                  <Text
+                    style={styles.rowLabel}
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
+                  >
+                    Carbohydrates (g):
+                  </Text>
                   <TextInput
-                    style={styles.tableInput}
+                    style={styles.rowInput}
                     keyboardType="numeric"
                     placeholder="0"
                     value={inputCarbs}
                     onChangeText={setInputCarbs}
                   />
+                </View>
+                <View style={styles.modalRow}>
+                  <Text
+                    style={styles.rowLabel}
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
+                  >
+                    Fats (g):
+                  </Text>
                   <TextInput
-                    style={styles.tableInput}
+                    style={styles.rowInput}
                     keyboardType="numeric"
                     placeholder="0"
                     value={inputFats}
@@ -81,6 +113,7 @@ const DietModal = ({
                   />
                 </View>
               </View>
+              {/* Eat Button */}
               <Pressable style={styles.modalButton} onPress={onEat}>
                 <Text style={styles.modalButtonText}>Eat</Text>
               </Pressable>
@@ -95,27 +128,38 @@ const DietModal = ({
 const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
+    backgroundColor: "rgba(0,0,0,0.75)",
     justifyContent: "center",
     alignItems: "center",
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
   },
   modalContent: {
     width: "90%",
     backgroundColor: Colors.light,
-    borderRadius: 10,
-    padding: 20,
+    borderRadius: 20,
+    alignItems: "center",
   },
   modalHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    width: "100%",
+    justifyContent: "center",
     alignItems: "center",
     backgroundColor: Colors.blueLight,
     padding: 10,
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    position: "relative",
+  },
+  cancelButton: {
+    position: "absolute",
+    right: 10,
+    top: 10,
   },
   modalHeaderText: {
-    fontSize: 18,
+    fontSize: 20,
     fontFamily: Fonts.bold,
     color: Colors.light,
   },
@@ -124,42 +168,43 @@ const styles = StyleSheet.create({
     height: 24,
   },
   modalTable: {
+    width: "100%",
+    paddingHorizontal: 20,
     marginTop: 20,
   },
-  tableHeader: {
+  modalRow: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    alignItems: "center",
+    marginVertical: 5,
   },
-  tableHeaderText: {
-    fontSize: 14,
-    fontFamily: Fonts.bold,
-    color: Colors.dark,
+  rowLabel: {
     flex: 1,
-    textAlign: "center",
+    fontSize: 16,
+    fontFamily: Fonts.regular,
+    color: Colors.dark,
+    textAlign: "right",
+    marginRight: 10,
+    flexShrink: 1, // Ensures label doesn't wrap to two lines
   },
-  tableRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 10,
-  },
-  tableInput: {
+  rowInput: {
+    flex: 1,
     borderWidth: 1,
     borderColor: Colors.neutral,
     borderRadius: 5,
     padding: 5,
-    flex: 1,
-    marginHorizontal: 2,
     textAlign: "center",
   },
   modalButton: {
+    width: "50%",
     marginTop: 20,
+    marginBottom: 20,
     backgroundColor: Colors.blueLight,
     paddingVertical: 10,
     borderRadius: 5,
     alignItems: "center",
   },
   modalButtonText: {
-    fontSize: 16,
+    fontSize: 20,
     fontFamily: Fonts.bold,
     color: Colors.light,
   },

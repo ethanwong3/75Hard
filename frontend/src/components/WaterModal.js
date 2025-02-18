@@ -32,7 +32,7 @@ const WaterModal = ({
             <View style={styles.modalContent}>
               <View style={styles.modalHeader}>
                 <Text style={styles.modalHeaderText}>Drink Water</Text>
-                <Pressable onPress={onClose}>
+                <Pressable style={styles.cancelButton} onPress={onClose}>
                   <Image style={styles.modalIcon} source={cancelIcon} />
                 </Pressable>
               </View>
@@ -57,7 +57,7 @@ const WaterModal = ({
 const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
+    backgroundColor: "rgba(0,0,0,0.75)",
     justifyContent: "center",
     alignItems: "center",
     position: "absolute",
@@ -67,22 +67,28 @@ const styles = StyleSheet.create({
     right: 0,
   },
   modalContent: {
-    width: "90%",
+    width: "70%",
     backgroundColor: Colors.light,
-    borderRadius: 10,
-    padding: 20,
+    borderRadius: 20,
+    alignItems: "center",
   },
   modalHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    width: "100%",
+    justifyContent: "center",
     alignItems: "center",
     backgroundColor: Colors.blueLight,
     padding: 10,
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    position: "relative",
+  },
+  cancelButton: {
+    position: "absolute",
+    right: 10,
+    top: 10,
   },
   modalHeaderText: {
-    fontSize: 18,
+    fontSize: 20,
     fontFamily: Fonts.bold,
     color: Colors.light,
   },
@@ -102,14 +108,16 @@ const styles = StyleSheet.create({
     color: Colors.dark,
   },
   modalButton: {
+    width: "50%",
     marginTop: 20,
+    marginBottom: 15,
     backgroundColor: Colors.blueLight,
     paddingVertical: 10,
     borderRadius: 5,
     alignItems: "center",
   },
   modalButtonText: {
-    fontSize: 16,
+    fontSize: 20,
     fontFamily: Fonts.bold,
     color: Colors.light,
   },
