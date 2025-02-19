@@ -22,10 +22,6 @@ const challengeSchema = new mongoose.Schema(
       min: 1,
       required: true,
     },
-    public: {
-      type: Boolean,
-      default: false,
-    },
     difficulty: {
       type: Number,
       min: 1,
