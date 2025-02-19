@@ -37,8 +37,8 @@ export const userRegister = async (req, res) => {
       weight,
       activityLevel,
     } = req.body;
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
+    const userFound = await User.findOne({ email });
+    if (userFound) {
       return res
         .status(400)
         .json({ success: false, error: "Email already in use" });
@@ -49,9 +49,9 @@ export const userRegister = async (req, res) => {
     const hashed = await bcrypt.hasPassword(password, salt);
 
     // create User with details and hashed pw
-    const newUser = new User({
+    const user = new User({
       email,
-      password: hashedPassword,
+      password: hashed,
       firstName,
       lastName,
       age,
@@ -59,9 +59,23 @@ export const userRegister = async (req, res) => {
       height,
       weight,
       activityLevel,
-      ...,
     });
-  } catch (e) {}
+
+    // add user to db
+    await user.save();
+
+    // generate token for authentication
+    const token = jwt.sign({ id: newUser._id }, JWT_SECRET, {
+      expiresIn: "1h",
+    });
+
+    // create new user object without pw to return
+    const { password: p, ...userDetails } = user.toObject();
+    res.status(201).json({ success: true, data: userDetails, token });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ success: false, error: e.message });
+  }
 };
 
 // user login

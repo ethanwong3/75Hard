@@ -87,7 +87,6 @@ const userSchema = new mongoose.Schema(
     },
     challengeComment: {
       type: String,
-      required: false,
       trim: true,
     },
     // Social
