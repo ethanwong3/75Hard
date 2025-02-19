@@ -1,13 +1,14 @@
 # 75Hard
 
-A mobile app designed for **habit tracking and fitness motivation**, inspired by the **75 HARD challenge**. Built using **React Native** and **Firebase**.
+A mobile app designed for habit tracking and fitness motivation, inspired by the 75 HARD challenge. Built using React Native.
 
 ## Tech Stack
 
-- **Frontend:** React Native (Expo)
-- **Backend:** Firebase (Auth, Firestore, Functions)
-- **State Management:** Redux / Zustand
-- **UI Frameworks:** React Native Paper, TailwindCSS
+- Frontend: React Native (Expo)
+- Backend: Nodes.js Express
+- State Management: Redux
+
+Other Tech: Cors, bcrypt, jwt, dotenv
 
 ## Folder Structure
 
