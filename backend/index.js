@@ -3,28 +3,26 @@ import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
 
-import routes from "./routes/index.js";
+import userRouter from "./routes/User.js";
+import challengeRouter from "./routes/Challenge.js";
 
-// Load environment variables from .env file
+// load env variables
 dotenv.config();
 
+// create app
 const app = express();
 
-// Middleware Setup
+// Middleware Setup ///////////////////////////////////////////////////////////
+// parse json => cors => routes => catch-all route => error-handling
 app.use(express.json());
 app.use(cors());
-
-// Routes
-app.use("/api/users", routes);
-
-// Catch-all route for unknown endpoints
+app.use("/api/user", userRouter);
+app.use("/api/challenge", challengeRouter);
 app.use((req, res, next) => {
   res.status(404).json({ success: false, message: "Endpoint not found" });
 });
-
-// Error Handling Middleware
 app.use((err, req, res, next) => {
-  console.error("Error:", err); // Log the error details for debugging
+  console.error("Error:", err);
   res.status(err.status || 500).json({
     success: false,
     error: err.message || "Internal Server Error",
