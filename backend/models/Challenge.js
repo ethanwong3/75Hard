@@ -1,5 +1,4 @@
-const mongoose = require("mongoose");
-
+import mongoose from "mongoose";
 const challengeSchema = new mongoose.Schema(
   {
     name: {
@@ -31,4 +30,4 @@ const challengeSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Challenge", challengeSchema);
+export default mongoose.model("Challenge", challengeSchema);

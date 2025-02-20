@@ -31,7 +31,7 @@ app.use((err, req, res, next) => {
 
 // Connect to MongoDB using Mongoose
 mongoose
-  .connect(process.env.MONGO_URI, {
+  .connect(process.env.MONGODB_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
