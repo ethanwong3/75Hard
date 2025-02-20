@@ -16,7 +16,8 @@ export const userFetch = async (req, res) => {
     if (!user)
       return res.status(404).json({ success: false, error: "User not found!" });
 
-    //
+    const { password, ...userWithoutPassword } = user.toObject();
+    res.status(200).json({ success: true, data: userWithoutPassword });
   } catch (e) {
     console.error(e);
     res.status(500).json({ success: false, error: e.message });
@@ -26,6 +27,9 @@ export const userFetch = async (req, res) => {
 // user register
 export const userRegister = async (req, res) => {
   try {
+    // debugging
+    console.log("userRegister called", req.body);
+
     // retrieve user info from route params and verify email unique to db
     const {
       email,

@@ -16,8 +16,15 @@ const app = express();
 // parse json => cors => routes => catch-all route => error-handling
 app.use(express.json());
 app.use(cors());
-app.use("/api/user", userRouter);
-app.use("/api/challenge", challengeRouter);
+app.use("/api/users", userRouter);
+app.use("/api/challenges", challengeRouter);
+
+// debug
+app.get("/ping", (req, res) => {
+  console.log("Ping route hit");
+  res.send("pong");
+});
+
 app.use((req, res, next) => {
   res.status(404).json({ success: false, message: "Endpoint not found" });
 });

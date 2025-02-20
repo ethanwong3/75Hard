@@ -10,9 +10,9 @@ import {
 
 const userRouter = express.Router();
 
-userRouter.get("/:id", verifyToken, userFetch);
 userRouter.post("/register", userRegister);
 userRouter.post("/login", userLogin);
+userRouter.get("/:id", verifyToken, userFetch);
 userRouter.patch("/:id", verifyToken, userUpdate);
 
 export default userRouter;
