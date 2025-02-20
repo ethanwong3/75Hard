@@ -8,7 +8,7 @@ A mobile app designed for habit tracking and fitness motivation, inspired by the
 - Backend: Nodes.js Express
 - State Management: Redux
 
-Other Tech: Cors, bcrypt, jwt, dotenv
+Other Tech: Cors, bcrypt, jwt, dotenv, axios
 
 ## Folder Structure
 
