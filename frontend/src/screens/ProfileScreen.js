@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, TextInput, Image, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import catImage from "../../assets/cat.png";
+import avatarImage from "../../assets/avatar.png";
 import clogImage from "../../assets/clog.png";
 
 export default function ProfileScreen() {
@@ -16,7 +16,7 @@ export default function ProfileScreen() {
 
       {/* Avatar and User Info */}
       <View style={styles.profileSection}>
-        <Image source={catImage} style={styles.avatar} />
+        <Image source={avatarImage} style={styles.avatar} />
         <View style={styles.userInfo}>
           <Text style={styles.username}>@Taejin1</Text>
           <Text style={styles.name}>Jonathan Pham</Text>

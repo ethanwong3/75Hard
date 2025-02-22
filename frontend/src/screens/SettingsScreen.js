@@ -19,14 +19,37 @@ const SettingsScreen = () => {
 
       {/* Settings Options */}
       <View style={styles.content}>
-        {["Edit Profile", "Notification", "Accessibility", "Privacy"].map(
-          (item, index) => (
-            <TouchableOpacity key={index} style={styles.option}>
-              <Text style={styles.optionText}>{item}</Text>
-              <Icon name="chevron-right" size={24} color="black" />
-            </TouchableOpacity>
-          )
-        )}
+        <TouchableOpacity 
+          style={styles.option} 
+          onPress={() => navigation.navigate("EditProfile")}
+        >
+          <Text style={styles.optionText}>Edit Profile</Text>
+          <Icon name="chevron-right" size={28} color="black" />
+        </TouchableOpacity>
+
+        <TouchableOpacity 
+          style={styles.option} 
+          onPress={() => navigation.navigate("Notification")}
+        >
+          <Text style={styles.optionText}>Notification</Text>
+          <Icon name="chevron-right" size={28} color="black" />
+        </TouchableOpacity>
+
+        <TouchableOpacity 
+          style={styles.option} 
+          onPress={() => navigation.navigate("Accessibility")}
+        >
+          <Text style={styles.optionText}>Accessibility</Text>
+          <Icon name="chevron-right" size={28} color="black" />
+        </TouchableOpacity>
+
+        <TouchableOpacity 
+          style={styles.option} 
+          onPress={() => navigation.navigate("Privacy")}
+        >
+          <Text style={styles.optionText}>Privacy</Text>
+          <Icon name="chevron-right" size={28} color="black" />
+        </TouchableOpacity>
       </View>
 
       {/* Logout & Delete Buttons */}
@@ -83,7 +106,7 @@ const styles = StyleSheet.create({
     borderColor: "#D3D3D3",
   },
   optionText: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: "500",
   },
   /* Footer */
