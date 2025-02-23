@@ -16,15 +16,15 @@ const Stack = createStackNavigator();
 import AuthStack from "./src/navigation/AuthStack";
 
 export default function App() {
-  const { user, loading } = useAuth();
+  // const { user, loading } = useAuth();
   let [fontsLoaded] = useFonts({
     Lexend_400Regular,
     Lexend_700Bold,
   });
 
-  if (loading) {
-    return null; // REPLACE WITH LOADING SCREEN
-  }
+  // if (loading) {
+  //   return null; // REPLACE WITH LOADING SCREEN
+  // }
 
   if (!fontsLoaded) {
     return (
@@ -36,7 +36,11 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      {/*{user ? <TabNavigator /> : <AuthStack />}*/}
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Main" component={TabNavigator} />
+        <Stack.Screen name="SettingsStack" component={SettingsStack} />
+      </Stack.Navigator>
+      {/* {user ? <TabNavigator /> : <AuthStack />} */}
       <TabNavigator />
     </NavigationContainer>
   );
