@@ -36,11 +36,8 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Main" component={TabNavigator} />
-        <Stack.Screen name="SettingsStack" component={SettingsStack} />
-      </Stack.Navigator>
-      {user ? <TabNavigator /> : <AuthStack />}
+      {/*{user ? <TabNavigator /> : <AuthStack />}*/}
+      <TabNavigator />
     </NavigationContainer>
   );
 }
