@@ -9,6 +9,8 @@ const EditProfileScreen = () => {
   const navigation = useNavigation();
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [bio, setBio] = useState("");
 
   return (
@@ -37,6 +39,12 @@ const EditProfileScreen = () => {
         <Text style={styles.label}>Username</Text>
         <TextInput style={styles.input} value={username} onChangeText={setUsername} />
 
+        <Text style={styles.label}>Email</Text>
+        <TextInput style={styles.input} value={email} onChangeText={setEmail} />
+
+        <Text style={styles.label}>Password</Text>
+        <TextInput style={styles.input} value={password} onChangeText={setPassword} />
+
         <Text style={styles.label}>Bio</Text>
         <TextInput 
           style={[styles.input, styles.bioInput]} 
@@ -47,9 +55,11 @@ const EditProfileScreen = () => {
       </View>
 
       {/* Save Button */}
-      <TouchableOpacity style={styles.saveButton}>
-        <Text style={styles.saveButtonText}>Save</Text>
-      </TouchableOpacity>
+      <View style={styles.footer}>
+        <TouchableOpacity style={styles.saveButton}>
+          <Text style={styles.saveText}>Save</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -93,39 +103,49 @@ const styles = StyleSheet.create({
     fontSize: 20, 
     fontFamily: Fonts.bold, 
     marginTop: 15, 
-    marginBottom: 20
+    marginBottom: 8
   },
   inputContainer: { 
     paddingHorizontal: 20 
   },
   label: { 
-    fontSize: 20, 
+    fontSize: 18, 
     fontFamily: Fonts.medium, 
-    marginBottom: 8 
+    marginBottom: 8,
+    fontWeight: "bold"
   },
   input: { 
     backgroundColor: "#fff", 
     padding: 12, 
     borderRadius: 8, 
-    fontSize: 20, 
-    marginBottom: 12 
+    fontSize: 18, 
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: "#ccc"
   },
   bioInput: { 
-    height: 80, 
-    textAlignVertical: "top" 
+    height: 65, 
+    textAlignVertical: "top",
+    borderWidth: 1,
+    borderColor: "#ccc"
   },
-  saveButton: { 
-    backgroundColor: "#4CAF50", 
-    padding: 14, 
-    alignItems: "center", 
-    borderRadius: 8, 
-    margin: 20 
+  /* Footer */
+  footer: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
   },
-  saveButtonText: { 
-    color: "#fff", 
-    fontSize: 18, 
-    fontFamily: Fonts.bold 
-  }
+  saveButton: {
+    backgroundColor: "#4CAF50",
+    paddingVertical: 15,
+    alignItems: "center",
+  },
+  saveText: {
+    color: "#FFFFFF",
+    fontWeight: "bold",
+    fontSize: 20,
+  },
 });
 
 export default EditProfileScreen;
