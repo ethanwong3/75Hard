@@ -23,3 +23,9 @@ cbbs rn
    cd frontend && npm install
    cd ../backend/functions && npm install
    ```
+
+## TODO
+
+add password strength
+change difficulty model enum
+use epxress rate limiting to prevent api abuse
