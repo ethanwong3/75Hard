@@ -65,6 +65,7 @@ const userSchema = new mongoose.Schema(
       carbohydrates: { type: Number, default: 0 },
       fats: { type: Number, default: 0 },
     },
+    // Other Progress
     // Nutrition goals
     nutritionGoals: {
       calories: { type: Number },
@@ -76,6 +77,7 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    // Other Goals
     // Challenge data
     overallProgress: {
       type: Number,

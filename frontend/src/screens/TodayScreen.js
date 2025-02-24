@@ -1,8 +1,6 @@
-// FRONTEND
-// TODO: create screens for when there is no challenge selected
-
-// BACKEND
-// TODO: auth => user models => user routes + user controllers => frontend API
+// TODO => maybe refactor user (model, controller, route) to separate api calls for fetching and updating data as entire user body is messy and large
+// TODO => auth api usage in screens
+// TODO => fix user model and any depending calls
 
 import React, { useState } from "react";
 import {
@@ -90,18 +88,47 @@ export default function TodayScreen() {
   const [inputFats, setInputFats] = useState("");
   const [waterAmount, setWaterAmount] = useState("");
 
-  // DUMMY DATA ///////////////////////////////////////////////////////////////
+  // DATA /////////////////////////////////////////////////////////////////////
 
-  // probably something like getUser() getUserDailyProgress() getUserTargets() getUserOverallProgress() getUserChallenge()
-  const [k, p, c, f] = [500, 15, 60, 90];
-  const [kcal, protein, carbohydrate, fat] = [1000, 100, 100, 100];
-  const [water, study, workout, photo] = [3000, 1, 1, 0];
-  const [progress, total] = [15, 75];
-  const challenge = {
-    name: "75 Hard",
-    rules:
-      "You must complete each the following everyday:\n- 45-minute indoor workout.\n- 45-minute outdoor workout.\n- Drink 1 gallon (3.8L) of water.\n- Read 10 pages of a self-improvement book.\n- Take a progress photo.",
-  };
+  const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const userId = 0;
+
+  const kcal = userData?.nutritionProgress.calories || 0;
+  const protein = userData?.nutritionProgress.protein || 0;
+  const carbohydrate = userData?.nutritionProgress.carbohydrates || 0;
+  const fat = userData?.nutritionProgress.fats || 0;
+  const water = userData?.waterIntake || 0;
+  const study = userData?.studyCounter || 0;
+  const workout = userData?.workoutCounter || 0;
+  const photo = userData?.progressPhotoCounter || 0;
+  const progress = userData?.overallProgress || 0;
+  const total = userData?.challenge?.total || 75;
+  const k = 0;
+  const p = 0;
+  const c = 0;
+  const f = 0;
+  const challenge = "";
+
+  // HOOK /////////////////////////////////////////////////////////////////////
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      setLoading(true);
+
+      console.log("Fetching user data..."); // Debugging
+      const response = await userFetch(userId);
+      console.log("User data response:", response); // Debugging
+
+      if (res.success) {
+        setUserData(res.data);
+      } else {
+        console.error(res.error);
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   // FUNCTIONS ////////////////////////////////////////////////////////////////
 
@@ -119,15 +146,49 @@ export default function TodayScreen() {
     setIsEditing(false);
   };
 
-  const handleEat = () => {
-    // In a real app, you’d update k, p, c, f based on input values.
-    // For now, simply close the modal.
+  const handleEat = async () => {
+    const userDataUpdate = {
+      nutritionProgress: {
+        calories: kcal + parseInt(inputKcal),
+        protein: protein + parseInt(inputProtein),
+        carbohydrates: carbohydrate + parseInt(inputCarbs),
+        fats: fat + parseInt(inputFats),
+      },
+    };
+
+    console.log("Updating user data...", userDataUpdate); // Debugging
+    const response = await userUpdate(userId, userDataUpdate);
+    console.log("User update response:", response); // Debugging
+
+    if (response.success) {
+      setUserData(response.data);
+    } else {
+      console.error(response.error);
+    }
+
     setShowDietModal(false);
   };
 
-  const handleDrink = () => {
-    // In a real app, update water state here.
+  const handleDrink = async () => {
+    const updatedData = { waterIntake: water + parseInt(waterAmount) };
+    const res = await userUpdate(userId, updatedData);
+    if (res.success) {
+      setUserData(res.data);
+    } else {
+      console.error(res.error);
+    }
+
     setShowWaterModal(false);
+  };
+
+  const handleOtherProgress = async (progressType) => {
+    const updatedData = { [progressType]: userData[progressType] + 1 };
+    const res = await userUpdate(userId, updatedData);
+    if (res.success) {
+      setUserData(res.data);
+    } else {
+      console.error(res.error);
+    }
   };
 
   const convertToScaleColor = (val) => {
@@ -361,7 +422,7 @@ export default function TodayScreen() {
                 </View>
                 <Pressable
                   onPress={() => {
-                    // Increment study by 1 (if not full)
+                    handleOtherProgress("study");
                   }}
                 >
                   <View style={[styles.iconContainer, styles.shadow]}>
@@ -385,7 +446,7 @@ export default function TodayScreen() {
                 </View>
                 <Pressable
                   onPress={() => {
-                    // Increment workout by 1 (if not full)
+                    handleOtherProgress("workout");
                   }}
                 >
                   <View style={[styles.iconContainer, styles.shadow]}>
@@ -409,7 +470,7 @@ export default function TodayScreen() {
                 </View>
                 <Pressable
                   onPress={() => {
-                    // Increment photo by 1 (if not full)
+                    handleOtherProgress("photo");
                   }}
                 >
                   <View style={[styles.iconContainer, styles.shadow]}>
