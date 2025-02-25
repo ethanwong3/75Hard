@@ -22,3 +22,23 @@ export const challengeFetch = async (req, res) => {
     res.status(500).json({ success: false, error: "Internal server error." });
   }
 };
+
+export const challengeFetchAll = async (req, res) => {
+  try {
+    console.log(`[DEBUG] Fetching all challenges`);
+    const challenges = await Challenge.find({});
+
+    if (!challenges.length) {
+      console.warn(`[WARN] No challenges found.`);
+      return res
+        .status(404)
+        .json({ success: false, error: "No challenges available!" });
+    }
+
+    console.log(`[DEBUG] Fetched ${challenges.length} challenges`);
+    res.status(200).json({ success: true, data: challenges });
+  } catch (e) {
+    console.error(`[ERROR] Failed to fetch challenges: ${e.message}`);
+    res.status(500).json({ success: false, error: "Internal server error." });
+  }
+};

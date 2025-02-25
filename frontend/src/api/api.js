@@ -104,9 +104,18 @@ export const userUpdate = async (userId, userData) => {
 
 export const fetchChallenge = async (userId) => {
   try {
-    const response = await API.get(`${API_URL}/challenges/${userId}`);
-    return response.data;
-  } catch (error) {
-    return handleApiError(error);
+    const res = await API.get(`${API_URL}/challenges/${userId}`);
+    return res.data;
+  } catch (e) {
+    return handleApiError(e);
+  }
+};
+
+export const fetchAllChallenge = async () => {
+  try {
+    const res = await API.get(`${API_URL}/challenges`);
+    return res.data;
+  } catch (e) {
+    return handleApiError(e);
   }
 };

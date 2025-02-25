@@ -1,7 +1,6 @@
 // TODO => auth api usage in screens
-// TODO => fix user model and any depending calls
-
-// No challenge screen + switch challenge behvaior + loading screen?
+// TODO => separate some of the user backend functions so that we are not always fetching entire user
+// TODO => Frontend => challenge screen + switch challenge behvaior + loading screen?
 
 import React, { useState } from "react";
 import {
