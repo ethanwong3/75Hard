@@ -66,6 +66,12 @@ const userSchema = new mongoose.Schema(
       fats: { type: Number, default: 0 },
     },
     // Other Progress
+    otherProgress: {
+      water: { type: Number, default: 0 },
+      study: { type: Number, default: 0 },
+      workout: { type: Number, default: 0 },
+      photo: { type: Number, default: 0 },
+    },
     // Nutrition goals
     nutritionGoals: {
       calories: { type: Number },
@@ -77,7 +83,6 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    // Other Goals
     // Challenge data
     overallProgress: {
       type: Number,

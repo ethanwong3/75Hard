@@ -1,6 +1,7 @@
-// TODO => maybe refactor user (model, controller, route) to separate api calls for fetching and updating data as entire user body is messy and large
 // TODO => auth api usage in screens
 // TODO => fix user model and any depending calls
+
+// No challenge screen + switch challenge behvaior + loading screen?
 
 import React, { useState } from "react";
 import {
@@ -108,7 +109,7 @@ export default function TodayScreen() {
   const p = 0;
   const c = 0;
   const f = 0;
-  const challenge = "";
+  const challenge = userData?.challenge || "75 Hard";
 
   // HOOK /////////////////////////////////////////////////////////////////////
 

@@ -16,6 +16,12 @@ const challengeSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    goals: [
+      {
+        name: { type: String, required: true, trim: true },
+        total: { type: Number, required: true, default: 1 },
+      },
+    ],
     total: {
       type: Number,
       min: 1,
