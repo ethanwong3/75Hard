@@ -30,6 +30,8 @@ import saveIcon from "../assets/saveIcon.png";
 import cancelIcon from "../assets/cancelIcon.png";
 import fireIcon from "../assets/fireIcon.png";
 
+// extra components
+
 function Streak({ progress }) {
   return (
     <View style={styles.streakContainer}>
@@ -72,14 +74,11 @@ export default function TodayScreen() {
     { label: "75 Soft", value: "75 Soft" },
   ]);
 
-  // TAB (OVERALL): states for comment
+  // states for comment
   const [isEditing, setIsEditing] = useState(false);
-  const [originalComment, setOriginalComment] = useState(
-    "This is my first time attempting this challenge, and hopefully the last!\n\nInstead of reading 10 pages a day, I will be solving at least 1 leetcode a day."
-  );
   const [editedComment, setEditedComment] = useState(originalComment);
 
-  // TODAY: states for diet and water popup
+  // states for diet and water popup
   const [showDietModal, setShowDietModal] = useState(false);
   const [showWaterModal, setShowWaterModal] = useState(false);
   const [inputKcal, setInputKcal] = useState("");
@@ -90,25 +89,39 @@ export default function TodayScreen() {
 
   // DATA /////////////////////////////////////////////////////////////////////
 
+  // user data
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const userId = 0;
 
+  // user progress data
   const kcal = userData?.nutritionProgress.calories || 0;
   const protein = userData?.nutritionProgress.protein || 0;
   const carbohydrate = userData?.nutritionProgress.carbohydrates || 0;
   const fat = userData?.nutritionProgress.fats || 0;
-  const water = userData?.waterIntake || 0;
-  const study = userData?.studyCounter || 0;
-  const workout = userData?.workoutCounter || 0;
-  const photo = userData?.progressPhotoCounter || 0;
+  const water = userData?.otherProgress.water || 0;
+  const study = userData?.otherProgress.study || 0;
+  const workout = userData?.otherProgress.workout || 0;
+  const photo = userData?.otherProgress.photo || 0;
   const progress = userData?.overallProgress || 0;
-  const total = userData?.challenge?.total || 75;
-  const k = 0;
-  const p = 0;
-  const c = 0;
-  const f = 0;
-  const challenge = userData?.challenge || "75 Hard";
+  const total = userData?.challenge?.total || 0;
+
+  // user goal data
+  const k = userData?.nutritionGoals.calories || 0;
+  const p = userData?.nutritionGoals.protein || 0;
+  const c = userData?.nutritionGoals.carbohydrates || 0;
+  const f = userData?.nutritionGoals.fats || 0;
+
+  // user-challenge data
+  const comment = userData.challengeComment || "err";
+
+  // challenge data
+  const challenge = userData?.challenge || {
+    name: "err",
+    rules: "err",
+    goals: [],
+    total: 0,
+  };
 
   // HOOK /////////////////////////////////////////////////////////////////////
 
@@ -117,8 +130,8 @@ export default function TodayScreen() {
       setLoading(true);
 
       console.log("Fetching user data..."); // Debugging
-      const response = await userFetch(userId);
-      console.log("User data response:", response); // Debugging
+      const res = await userFetch(userId);
+      console.log("User data response:", res); // Debugging
 
       if (res.success) {
         setUserData(res.data);
@@ -136,18 +149,38 @@ export default function TodayScreen() {
     setToggled(!isToggled);
   };
 
-  const handleSaveComment = () => {
-    setOriginalComment(editedComment);
+  const handleSaveComment = async () => {
     setIsEditing(false);
+
+    if (editedComment === comment) {
+      console.log("No changes detected, skipping API call.");
+      return;
+    }
+
+    console.log("Updating user comment...");
+
+    const res = await userUpdate(userId, {
+      challengeComment: editedComment,
+    });
+
+    if (res.success) {
+      console.log("Comment updated successfully:", res.data.challengeComment);
+      setUserData((prevData) => ({
+        ...prevData,
+        challengeComment: res.data.challengeComment,
+      }));
+    } else {
+      console.error("Failed to update comment:", res.error);
+    }
   };
 
   const handleCancelComment = () => {
-    setEditedComment(originalComment);
+    setEditedComment(comment);
     setIsEditing(false);
   };
 
   const handleEat = async () => {
-    const userDataUpdate = {
+    const updatedData = {
       nutritionProgress: {
         calories: kcal + parseInt(inputKcal),
         protein: protein + parseInt(inputProtein),
@@ -156,38 +189,77 @@ export default function TodayScreen() {
       },
     };
 
-    console.log("Updating user data...", userDataUpdate); // Debugging
-    const response = await userUpdate(userId, userDataUpdate);
-    console.log("User update response:", response); // Debugging
+    console.log("Updating nutrition progress...", updatedData);
+
+    const response = await userUpdate(userId, updatedData);
 
     if (response.success) {
-      setUserData(response.data);
+      console.log(
+        "Nutrition progress updated:",
+        response.data.nutritionProgress
+      );
+
+      setUserData((prevData) => ({
+        ...prevData,
+        nutritionProgress: response.data.nutritionProgress,
+      }));
     } else {
-      console.error(response.error);
+      console.error("Failed to update nutrition progress:", response.error);
     }
 
     setShowDietModal(false);
   };
 
   const handleDrink = async () => {
-    const updatedData = { waterIntake: water + parseInt(waterAmount) };
+    const updatedData = {
+      otherProgress: {
+        ...userData.otherProgress,
+        water: water + parseInt(waterAmount),
+      },
+    };
+
+    console.log("Updating water intake...", updatedData);
+
     const res = await userUpdate(userId, updatedData);
+
     if (res.success) {
-      setUserData(res.data);
+      console.log("Water intake updated successfully:", res.data.otherProgress);
+
+      setUserData((prevData) => ({
+        ...prevData,
+        otherProgress: res.data.otherProgress,
+      }));
     } else {
-      console.error(res.error);
+      console.error("Failed to update water intake:", res.error);
     }
 
     setShowWaterModal(false);
   };
 
   const handleOtherProgress = async (progressType) => {
-    const updatedData = { [progressType]: userData[progressType] + 1 };
+    const updatedData = {
+      otherProgress: {
+        ...userData.otherProgress,
+        [progressType]: userData.otherProgress[progressType] + 1,
+      },
+    };
+
+    console.log(`Updating ${progressType} progress...`, updatedData);
+
     const res = await userUpdate(userId, updatedData);
+
     if (res.success) {
-      setUserData(res.data);
+      console.log(
+        `${progressType} updated successfully:`,
+        res.data.otherProgress
+      );
+
+      setUserData((prevData) => ({
+        ...prevData,
+        otherProgress: res.data.otherProgress,
+      }));
     } else {
-      console.error(res.error);
+      console.error(`Failed to update ${progressType}:`, res.error);
     }
   };
 
