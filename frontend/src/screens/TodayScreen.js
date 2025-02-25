@@ -1,6 +1,6 @@
-// TODO => auth api usage in screens
+// TODO => fix model reference for other progress goals
 // TODO => separate some of the user backend functions so that we are not always fetching entire user
-// TODO => Frontend => challenge screen + switch challenge behvaior + loading screen?
+// TODO => Frontend => no challenge screen + switch challenge screen + loading screen
 
 import React, { useState } from "react";
 import {
@@ -14,8 +14,8 @@ import {
 } from "react-native";
 import PieChart from "react-native-pie-chart";
 import * as Progress from "react-native-progress";
-import DropDownPicker from "react-native-dropdown-picker";
 
+import LoadingScreen from "../components/LoadingScreen";
 import DietModal from "../components/DietModal";
 import WaterModal from "../components/WaterModal";
 
@@ -29,6 +29,8 @@ import editIcon from "../assets/editIcon.png";
 import saveIcon from "../assets/saveIcon.png";
 import cancelIcon from "../assets/cancelIcon.png";
 import fireIcon from "../assets/fireIcon.png";
+
+import { userFetch, userUpdate } from "../api";
 
 // extra components
 
@@ -61,24 +63,15 @@ function Calendar({ progress, total }) {
 }
 
 export default function TodayScreen() {
-  // SCREEN
+  // STATES ///////////////////////////////////////////////////////////////////
+
+  const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const userId = 0;
   const [screenWidth, setScreenWidth] = useState(0);
   const [isToggled, setToggled] = useState(false);
-
-  // TAB (OVERALL): states for rules
-  const [selectedChallenge, setSelectedChallenge] = useState("75 Hard");
-  const [open, setOpen] = useState(false);
-  const [items, setItems] = useState([
-    { label: "75 Hard", value: "75 Hard" },
-    { label: "75 Medium", value: "75 Medium" },
-    { label: "75 Soft", value: "75 Soft" },
-  ]);
-
-  // states for comment
   const [isEditing, setIsEditing] = useState(false);
   const [editedComment, setEditedComment] = useState(originalComment);
-
-  // states for diet and water popup
   const [showDietModal, setShowDietModal] = useState(false);
   const [showWaterModal, setShowWaterModal] = useState(false);
   const [inputKcal, setInputKcal] = useState("");
@@ -87,12 +80,29 @@ export default function TodayScreen() {
   const [inputFats, setInputFats] = useState("");
   const [waterAmount, setWaterAmount] = useState("");
 
-  // DATA /////////////////////////////////////////////////////////////////////
+  // HOOK /////////////////////////////////////////////////////////////////////
 
-  // user data
-  const [userData, setUserData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const userId = 0;
+  useEffect(() => {
+    const fetchUser = async () => {
+      setLoading(true);
+
+      console.log("Fetching user data...");
+      const res = await userFetch(userId);
+      console.log("User data response:", res);
+
+      if (res.success) {
+        setUserData(res.data);
+      } else {
+        console.error(res.error);
+      }
+
+      setLoading(false);
+    };
+
+    fetchUser();
+  }, []);
+
+  // DATA /////////////////////////////////////////////////////////////////////
 
   // user progress data
   const kcal = userData?.nutritionProgress.calories || 0;
@@ -103,45 +113,18 @@ export default function TodayScreen() {
   const study = userData?.otherProgress.study || 0;
   const workout = userData?.otherProgress.workout || 0;
   const photo = userData?.otherProgress.photo || 0;
-  const progress = userData?.overallProgress || 0;
-  const total = userData?.challenge?.total || 0;
 
   // user goal data
   const k = userData?.nutritionGoals.calories || 0;
   const p = userData?.nutritionGoals.protein || 0;
   const c = userData?.nutritionGoals.carbohydrates || 0;
   const f = userData?.nutritionGoals.fats || 0;
+  const wa = userData?.challenge?.goals.water || 0;
+  const st = userData?.challenge?.goals.study || 0;
+  const wo = userData?.challenge?.goals.workout || 0;
+  const ph = userData?.challenge?.goals.photo || 0;
 
-  // user-challenge data
-  const comment = userData.challengeComment || "err";
-
-  // challenge data
-  const challenge = userData?.challenge || {
-    name: "err",
-    rules: "err",
-    goals: [],
-    total: 0,
-  };
-
-  // HOOK /////////////////////////////////////////////////////////////////////
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      setLoading(true);
-
-      console.log("Fetching user data..."); // Debugging
-      const res = await userFetch(userId);
-      console.log("User data response:", res); // Debugging
-
-      if (res.success) {
-        setUserData(res.data);
-      } else {
-        console.error(res.error);
-      }
-    };
-
-    fetchUser();
-  }, []);
+  if (loading) return <LoadingScreen />;
 
   // FUNCTIONS ////////////////////////////////////////////////////////////////
 
@@ -151,17 +134,13 @@ export default function TodayScreen() {
 
   const handleSaveComment = async () => {
     setIsEditing(false);
-
-    if (editedComment === comment) {
+    if (editedComment === userData?.challengeComment) {
       console.log("No changes detected, skipping API call.");
       return;
     }
 
     console.log("Updating user comment...");
-
-    const res = await userUpdate(userId, {
-      challengeComment: editedComment,
-    });
+    const res = await userUpdate(userId, { challengeComment: editedComment });
 
     if (res.success) {
       console.log("Comment updated successfully:", res.data.challengeComment);
@@ -175,36 +154,34 @@ export default function TodayScreen() {
   };
 
   const handleCancelComment = () => {
-    setEditedComment(comment);
     setIsEditing(false);
+    setEditedComment(userData?.challengeComment);
   };
 
   const handleEat = async () => {
     const updatedData = {
       nutritionProgress: {
-        calories: kcal + parseInt(inputKcal),
-        protein: protein + parseInt(inputProtein),
-        carbohydrates: carbohydrate + parseInt(inputCarbs),
-        fats: fat + parseInt(inputFats),
+        calories: userData?.nutritionProgress.calories + parseInt(inputKcal),
+        protein: userData?.nutritionProgress.protein + parseInt(inputProtein),
+        carbohydrates:
+          userData?.nutritionProgress.carbohydrates + parseInt(inputCarbs),
+        fats: userData?.nutritionProgress.fats + parseInt(inputFats),
       },
     };
 
     console.log("Updating nutrition progress...", updatedData);
 
-    const response = await userUpdate(userId, updatedData);
+    const res = await userUpdate(userId, updatedData);
 
-    if (response.success) {
-      console.log(
-        "Nutrition progress updated:",
-        response.data.nutritionProgress
-      );
+    if (res.success) {
+      console.log("Nutrition progress updated:", res.data.nutritionProgress);
 
       setUserData((prevData) => ({
         ...prevData,
-        nutritionProgress: response.data.nutritionProgress,
+        nutritionProgress: res.data.nutritionProgress,
       }));
     } else {
-      console.error("Failed to update nutrition progress:", response.error);
+      console.error("Failed to update nutrition progress:", res.error);
     }
 
     setShowDietModal(false);
@@ -214,7 +191,7 @@ export default function TodayScreen() {
     const updatedData = {
       otherProgress: {
         ...userData.otherProgress,
-        water: water + parseInt(waterAmount),
+        water: userData?.otherProgress.water + parseInt(waterAmount),
       },
     };
 
@@ -240,7 +217,7 @@ export default function TodayScreen() {
     const updatedData = {
       otherProgress: {
         ...userData.otherProgress,
-        [progressType]: userData.otherProgress[progressType] + 1,
+        [progressType]: userData?.otherProgress[progressType] + 1,
       },
     };
 
@@ -313,28 +290,22 @@ export default function TodayScreen() {
           <View style={styles.subContainer}>
             {/* Streak and Calendar */}
             <View style={styles.overallChallengeContainer}>
-              <Streak progress={progress} />
-              <Calendar progress={progress} total={total} />
+              <Streak progress={userData?.overallProgress} />
+              <Calendar
+                progress={userData?.overallProgress}
+                total={userData?.challenge?.total}
+              />
             </View>
             {/* Rules */}
             <View style={styles.overallOtherContainer}>
               <View style={styles.top}>
                 <Text style={styles.title}>Rules:</Text>
-                <DropDownPicker
-                  open={open}
-                  value={selectedChallenge}
-                  items={items}
-                  setOpen={setOpen}
-                  setValue={setSelectedChallenge}
-                  setItems={setItems}
-                  listMode="SCROLLVIEW"
-                  containerStyle={[styles.pickerContainer, styles.shadow]}
-                  style={styles.picker}
-                  dropDownContainerStyle={styles.dropDownContainer}
-                />
+                <Text style={[styles.text, styles.picker]}>
+                  {challenge.name}
+                </Text>
               </View>
               <View style={[styles.bottom, styles.shadow]}>
-                <Text style={styles.text}>{challenge.rules}</Text>
+                <Text style={styles.text}>{userData?.challenge?.rules}</Text>
               </View>
             </View>
             {/* Comments */}
@@ -367,7 +338,7 @@ export default function TodayScreen() {
                     onChangeText={setEditedComment}
                   />
                 ) : (
-                  <Text style={styles.text}>{editedComment}</Text>
+                  <Text style={styles.text}>{userData?.challengeComment}</Text>
                 )}
               </View>
             </View>
@@ -438,14 +409,7 @@ export default function TodayScreen() {
                     animated={true}
                   />
                 </View>
-                <Pressable
-                  onPress={() => {
-                    if (k / kcal < 1) {
-                      setShowDietModal(true);
-                    }
-                  }}
-                  disabled={k / kcal >= 1}
-                >
+                <Pressable onPress={() => setShowDietModal(true)}>
                   <View style={[styles.iconContainer, styles.shadow]}>
                     <Image style={styles.icon} source={dietIcon} />
                   </View>
@@ -458,21 +422,14 @@ export default function TodayScreen() {
                     width={screenWidth}
                     height={20}
                     borderRadius={10}
-                    progress={water / 3800}
-                    color={convertToScaleColor(water / 3800)}
+                    progress={water / wa}
+                    color={convertToScaleColor(water / wa)}
                     unfilledColor="#D9D9D9"
                     borderWidth={0}
                     animated={true}
                   />
                 </View>
-                <Pressable
-                  onPress={() => {
-                    if (water / 3800 < 1) {
-                      setShowWaterModal(true);
-                    }
-                  }}
-                  disabled={water / 3800 >= 1}
-                >
+                <Pressable onPress={() => setShowWaterModal(true)}>
                   <View style={[styles.iconContainer, styles.shadow]}>
                     <Image style={styles.icon} source={waterIcon} />
                   </View>
@@ -485,8 +442,8 @@ export default function TodayScreen() {
                     width={screenWidth}
                     height={20}
                     borderRadius={10}
-                    progress={study / 10}
-                    color={convertToScaleColor(study / 10)}
+                    progress={study / st}
+                    color={convertToScaleColor(study / st)}
                     unfilledColor="#D9D9D9"
                     borderWidth={0}
                     animated={true}
@@ -509,8 +466,8 @@ export default function TodayScreen() {
                     width={screenWidth}
                     height={20}
                     borderRadius={10}
-                    progress={workout / 2}
-                    color={convertToScaleColor(workout / 2)}
+                    progress={workout / wo}
+                    color={convertToScaleColor(workout / wo)}
                     unfilledColor="#D9D9D9"
                     borderWidth={0}
                     animated={true}
@@ -533,8 +490,8 @@ export default function TodayScreen() {
                     width={screenWidth}
                     height={20}
                     borderRadius={10}
-                    progress={photo / 1}
-                    color={convertToScaleColor(photo / 1)}
+                    progress={photo / ph}
+                    color={convertToScaleColor(photo / ph)}
                     unfilledColor="#D9D9D9"
                     borderWidth={0}
                     animated={true}
