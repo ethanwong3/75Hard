@@ -1,4 +1,3 @@
-// TODO => fix model reference for other progress goals
 // TODO => separate some of the user backend functions so that we are not always fetching entire user
 // TODO => Frontend => no challenge screen + switch challenge screen + loading screen
 
