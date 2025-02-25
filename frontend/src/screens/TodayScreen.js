@@ -1,5 +1,6 @@
-// TODO => separate some of the user backend functions so that we are not always fetching entire user
+// TODO => Backend => separate some of the user backend functions so that we are not always fetching entire user
 // TODO => Frontend => no challenge screen + switch challenge screen + loading screen
+// TODO => Other => State Management (redux)
 
 import React, { useState } from "react";
 import {
@@ -70,7 +71,7 @@ export default function TodayScreen() {
   const [screenWidth, setScreenWidth] = useState(0);
   const [isToggled, setToggled] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [editedComment, setEditedComment] = useState(originalComment);
+  const [editedComment, setEditedComment] = useState("");
   const [showDietModal, setShowDietModal] = useState(false);
   const [showWaterModal, setShowWaterModal] = useState(false);
   const [inputKcal, setInputKcal] = useState("");
@@ -91,6 +92,7 @@ export default function TodayScreen() {
 
       if (res.success) {
         setUserData(res.data);
+        setEditedComment(userData.challengeComment || "");
       } else {
         console.error(res.error);
       }
@@ -99,7 +101,7 @@ export default function TodayScreen() {
     };
 
     fetchUser();
-  }, []);
+  }, [userData]);
 
   // DATA /////////////////////////////////////////////////////////////////////
 
@@ -303,8 +305,10 @@ export default function TodayScreen() {
                   {challenge.name}
                 </Text>
               </View>
-              <View style={[styles.bottom, styles.shadow]}>
-                <Text style={styles.text}>{userData?.challenge?.rules}</Text>
+              <View style={[styles.pickerContainer, styles.shadow]}>
+                <Text style={[styles.text, styles.picker]}>
+                  {userData?.challenge?.name || "No Challenge"}
+                </Text>
               </View>
             </View>
             {/* Comments */}
