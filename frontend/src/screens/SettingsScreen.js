@@ -29,6 +29,22 @@ const SettingsScreen = () => {
 
         <TouchableOpacity 
           style={styles.option} 
+          onPress={() => navigation.navigate("Stats")}
+        >
+          <Text style={styles.optionText}>Edit Stats</Text>
+          <Icon name="chevron-right" size={28} color="black" />
+        </TouchableOpacity>
+
+        <TouchableOpacity 
+          style={styles.option} 
+          onPress={() => navigation.navigate("MacroTargets")}
+        >
+          <Text style={styles.optionText}>Macro Targets</Text>
+          <Icon name="chevron-right" size={28} color="black" />
+        </TouchableOpacity>
+
+        <TouchableOpacity 
+          style={styles.option} 
           onPress={() => navigation.navigate("Notification")}
         >
           <Text style={styles.optionText}>Notification</Text>
