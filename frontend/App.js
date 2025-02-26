@@ -41,6 +41,7 @@ export default function App() {
         <Stack.Screen name="SettingsStack" component={SettingsStack} />
       </Stack.Navigator>
       {/* {user ? <TabNavigator /> : <AuthStack />} */}
+      {/*{user ? <TabNavigator /> : <AuthStack />}*/}
       <TabNavigator />
     </NavigationContainer>
   );
